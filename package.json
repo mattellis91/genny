@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/mattellis91/ts-compiler/issues"
   },
-  "homepage": "https://github.com/mattellis91/ts-compiler#readme"
+  "homepage": "https://github.com/mattellis91/ts-compiler#readme",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
 }
