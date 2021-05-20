@@ -4,7 +4,9 @@ import { ExpressionSyntax } from "./expressionSyntax";
 
 export class NumberExpressionSyntax extends ExpressionSyntax implements INumberExpressionSyntax {
     public type = SyntaxType.NumberExpression
-    constructor(number: SyntaxToken) {
+    public numberToken:SyntaxToken;
+    constructor(numberToken: SyntaxToken) {
         super();
+        this.numberToken = numberToken;
     }
 } 
