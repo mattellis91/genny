@@ -1,4 +1,4 @@
-import { SyntaxToken } from "../../lexer/syntax-token";
+import { SyntaxToken } from "../../lexing/syntax-token";
 
 export interface ILexer {
     nextToken():SyntaxToken;

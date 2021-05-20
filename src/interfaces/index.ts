@@ -1,2 +1,3 @@
 export * from './repl-interaces';
-export * from './lexer-interfaces';
+export * from './lexing-interfaces';
+export * from './parsing-interfaces';

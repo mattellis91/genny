@@ -9,5 +9,7 @@ export enum SyntaxType {
     CloseParenthesisToken = "CloseParenthesisToken",
     ModToken = "ModToken",
     UnknownToken = "UnknownToken",
-    EOFToken = "EOFToken"
+    EOFToken = "EOFToken",
+    NumberExpression = "NumberExpression",
+    BinaryExpression = "BinaryExpression"
 };

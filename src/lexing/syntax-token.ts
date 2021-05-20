@@ -14,5 +14,4 @@ export class SyntaxToken implements ISyntaxToken{
         this.type = type;
         this.value = value;
     }
-
 }

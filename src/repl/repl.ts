@@ -1,6 +1,6 @@
 import { IRepl } from "../interfaces/repl-interaces";
 import * as readlineSync from "readline-sync";
-import { Lexer, SyntaxType } from "../lexer";
+import { Lexer, SyntaxType } from "../lexing";
 
 export class Repl implements IRepl{
     constructor() {}
