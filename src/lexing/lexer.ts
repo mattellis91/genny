@@ -6,6 +6,7 @@ export class Lexer implements ILexer{
 
     private readonly _text:string;
     private _position:number = 0;
+    public diagnostics:string[] = [];
 
     constructor(text:string) {
         this._text = text;
@@ -23,8 +24,28 @@ export class Lexer implements ILexer{
         this._position++;
     }
 
-    private charIsDigit(char:string) : boolean{
-        return /^\d+$/.test(char);
+    private charIsBlank(charCode:number) : boolean{
+        return (
+            charCode == 9 ||
+            charCode == 11 ||
+            charCode == 12 ||
+            charCode == 32 ||
+            charCode == 160
+          );
+    }
+
+    private charIsAlpha(charCode:number) : boolean {
+        return (
+            charCode >= 65 && charCode <= 90 ||
+            charCode >= 97 && charCode <= 122 ||
+            charCode == 95
+          );
+    }
+
+    private charIsNumber(charCode:number) : boolean {
+        return (
+            charCode >= 48 && charCode <= 57
+          );
     }
 
     public nextToken() : SyntaxToken {
@@ -35,9 +56,9 @@ export class Lexer implements ILexer{
         }
 
         //get number token
-        if(this.charIsDigit(this.getCurrentChar())) {
+        if(this.charIsNumber(this.getCurrentChar().charCodeAt(0))) {
             const start = this._position;
-            while(this.charIsDigit(this.getCurrentChar())) {
+            while(this.charIsNumber(this.getCurrentChar().charCodeAt(0))) {
                 this.next();
             }
             
@@ -48,12 +69,10 @@ export class Lexer implements ILexer{
         }
 
         //get white space token
-        let ch = this.getCurrentChar();
-        if ((ch === ' ') || (ch === '\t') || (ch === '\n')) {
+        if (this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
             const start = this._position;
-            while((ch ===  ' ') || (ch === '\t') || (ch === '\n')) {
+            while(this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
                 this.next();
-                ch = this.getCurrentChar();
             }
             const length = this._position - start;
             
@@ -85,6 +104,7 @@ export class Lexer implements ILexer{
         }
 
         //unknown token
+        this.diagnostics.push("ERROR: bad character in input: " + this.getCurrentChar());
         return new SyntaxToken(SyntaxType.UnknownToken, this._position++, this._text.substring(this._position - 1, 1), null);
     }
 }

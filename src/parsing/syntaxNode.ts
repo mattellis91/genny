@@ -3,4 +3,5 @@ import { SyntaxType } from "../lexing/syntax-type";
 
 export abstract class SyntaxNode implements ISyntaxNode {
     public abstract type:SyntaxType;
+    public abstract getChildren():SyntaxNode[];
 } 

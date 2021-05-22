@@ -14,4 +14,12 @@ export class BinaryExpressionSyntax extends ExpressionSyntax implements IBinaryE
         this.operatorToken = operatorToken;
         this.right = right;
     }
+
+    public getChildren():SyntaxNode[] {
+        return [
+            this.left,
+            this.operatorToken,
+            this.right
+        ]
+    }
 }  

@@ -1,1 +1,3 @@
-export interface IParser {}
+export interface IParser {
+    diagnostics: string[];
+}

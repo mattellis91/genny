@@ -1,6 +1,8 @@
 import { IRepl } from "../interfaces/repl-interaces";
 import * as readlineSync from "readline-sync";
-import { Lexer, SyntaxType } from "../lexing";
+import { Lexer } from "../lexing";
+import { Parser } from "../parsing/parser";
+import { Util } from "../util/util";
 
 export class Repl implements IRepl{
     constructor() {}
@@ -10,14 +12,12 @@ export class Repl implements IRepl{
             const input = readlineSync.question(">:");
 
             const lexer = new Lexer(input);
-            while(true) {
-                const token = lexer.nextToken();
-                if(token.type === SyntaxType.EOFToken) {
-                    break;
-                }
-                console.log("Token Type: " + token.type + ", Token Text: " + token.text);
-                if(token.value) {
-                    console.log("Token Value: " + token.value);
+            const parser = new Parser(input); 
+            const expression = parser.parse();
+            Util.prettyPrint(expression);
+            if(parser.diagnostics.length) {
+                for(const diagnostic of parser.diagnostics) {
+                    Util.logErrorMessage(diagnostic);
                 }
             }
             if(input === 'q') {
