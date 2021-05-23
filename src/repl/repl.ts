@@ -3,25 +3,43 @@ import * as readlineSync from "readline-sync";
 import { Lexer } from "../lexing";
 import { Parser } from "../parsing/parser";
 import { Util } from "../util/util";
+import { Evaluator, SyntaxTree } from "../parsing";
 
 export class Repl implements IRepl{
     constructor() {}
 
+
+
     main():void {
+        let showTree = false;
         while(true) {
             const input = readlineSync.question(">:");
+            if(input === 'q') return;
+            if(input === '$showTree') {
+                showTree = !showTree;
+                console.log(showTree ? "Showing parse trees" : "Hiding parse trees");
+                continue;
+            }
 
-            const lexer = new Lexer(input);
-            const parser = new Parser(input); 
-            const expression = parser.parse();
-            Util.prettyPrint(expression);
-            if(parser.diagnostics.length) {
-                for(const diagnostic of parser.diagnostics) {
+            if(input === '$cls') {
+                console.clear();
+                continue;
+            }
+
+            const syntaxTree = SyntaxTree.parse(input);
+
+            if(showTree) {
+                Util.prettyPrint(syntaxTree.root);
+            }
+
+            if(syntaxTree.diagnostics.length) {
+                for(const diagnostic of syntaxTree.diagnostics) {
                     Util.logErrorMessage(diagnostic);
                 }
-            }
-            if(input === 'q') {
-                return;
+            } else {
+                const evaluator = new Evaluator(syntaxTree.root); 
+                const result = evaluator.evaluate();
+                console.log(result);
             }
         }
     }

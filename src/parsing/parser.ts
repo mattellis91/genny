@@ -3,6 +3,8 @@ import { Lexer, SyntaxToken, SyntaxType } from "../lexing";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
 import { NumberExpressionSyntax } from "./numberExpressionSyntax";
+import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
+import { SyntaxTree } from "./syntaxTree";
 
 export class Parser implements IParser {
 
@@ -42,8 +44,19 @@ export class Parser implements IParser {
         this._position++;
         return current;
     }
+
+    private parseExpression(): ExpressionSyntax {
+        return this.parseTerm();
+    }
     
     private parsePrimaryExpression(): ExpressionSyntax{
+
+        if(this.getCurrent().type === SyntaxType.OpenParenthesisToken) {
+            const left = this.nextToken();
+            const expression = this.parseExpression();
+            const right = this.match(SyntaxType.CloseParenthesisToken);
+            return new ParenthesizedExpressionSyntax(left,expression,right);
+        }
         const numberToken = this.match(SyntaxType.NumberToken);
         return new NumberExpressionSyntax(numberToken);
     }
@@ -53,18 +66,39 @@ export class Parser implements IParser {
             return this.nextToken();
         }
 
-        this.diagnostics.push("ERROR: Unexpected token <" + this.getCurrent().type + ">, expected <" + type + ">"5)
+        this.diagnostics.push("ERROR: Unexpected token <" + this.getCurrent().type + ">, expected <" + type + ">");
         return new SyntaxToken(type, this.getCurrent().position, null, null)
     }
 
-    public parse(): ExpressionSyntax {
+    private parseTerm(): ExpressionSyntax {
+        let left =  this.parseFactor();
+        while(this.getCurrent().type === SyntaxType.PlusToken 
+            || this.getCurrent().type === SyntaxType.MinusToken 
+        ) {
+            const operatorToken = this.nextToken();
+            const right = this.parseFactor(); 
+            left = new BinaryExpressionSyntax(left, operatorToken, right);
+        }
+
+        return left;
+    }
+
+    private parseFactor(): ExpressionSyntax {
         let left =  this.parsePrimaryExpression();
-        while(this.getCurrent().type === SyntaxType.PlusToken || this.getCurrent().type === SyntaxType.MinusToken) {
+        while(this.getCurrent().type === SyntaxType.StarToken 
+            || this.getCurrent().type === SyntaxType.SlashToken 
+        ) {
             const operatorToken = this.nextToken();
             const right = this.parsePrimaryExpression(); 
             left = new BinaryExpressionSyntax(left, operatorToken, right);
         }
 
         return left;
+    }
+
+    public parse(): SyntaxTree {
+        const expression = this.parseTerm();
+        const eof = this.match(SyntaxType.EOFToken);
+        return new SyntaxTree(expression, eof, this.diagnostics);
     }
 }    

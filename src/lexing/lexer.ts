@@ -65,6 +65,10 @@ export class Lexer implements ILexer{
             const length = this._position - start;
             const text = this._text.substring(start, start + length);
             const value = Number.parseInt(text);
+            if(isNaN(value)) {
+                this.diagnostics.push("ERROR: The number " + text + " cannot be represented as a number");
+            }
+
             return new SyntaxToken(SyntaxType.NumberToken, start, text, value);
         }
 

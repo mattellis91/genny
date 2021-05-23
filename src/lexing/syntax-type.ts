@@ -11,5 +11,6 @@ export enum SyntaxType {
     UnknownToken = "UnknownToken",
     EOFToken = "EOFToken",
     NumberExpression = "NumberExpression",
-    BinaryExpression = "BinaryExpression"
+    BinaryExpression = "BinaryExpression",
+    ParenthesizedExpression = "ParenthesizedExpression"
 };
