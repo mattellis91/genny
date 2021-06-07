@@ -1,7 +1,5 @@
 import { IRepl } from "../interfaces/repl-interaces";
 import * as readlineSync from "readline-sync";
-import { Lexer } from "../lexing";
-import { Parser } from "../parsing/parser";
 import { Util } from "../util/util";
 import { Evaluator, SyntaxTree } from "../parsing";
 

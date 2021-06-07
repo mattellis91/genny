@@ -2,7 +2,7 @@ import { IEvaluator } from "../interfaces";
 import { SyntaxType } from "../lexing";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
-import { NumberExpressionSyntax } from "./numberExpressionSyntax";
+import { LiteralExpressionSyntax } from "./literalExpressionSyntax";
 import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
 
 export class Evaluator implements IEvaluator {
@@ -19,8 +19,8 @@ export class Evaluator implements IEvaluator {
         //binaryExpression
         //NumberExpression
 
-        if(node instanceof NumberExpressionSyntax) {
-            return node.numberToken.value as number;
+        if(node instanceof LiteralExpressionSyntax) {
+            return node.literalToken.value as number;
         }
 
         if(node instanceof BinaryExpressionSyntax) {

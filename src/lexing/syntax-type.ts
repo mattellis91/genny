@@ -1,3 +1,5 @@
+import { LiteralExpressionSyntax } from "../parsing";
+
 export enum SyntaxType {
     NumberToken = "NumberToken",
     WhitespaceToken = "WhitespaceToken",
@@ -12,5 +14,7 @@ export enum SyntaxType {
     EOFToken = "EOFToken",
     NumberExpression = "NumberExpression",
     BinaryExpression = "BinaryExpression",
-    ParenthesizedExpression = "ParenthesizedExpression"
+    ParenthesizedExpression = "ParenthesizedExpression",
+    LiteralExpression = "LiteralExpression"
+
 };
