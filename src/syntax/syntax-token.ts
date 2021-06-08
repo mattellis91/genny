@@ -1,6 +1,6 @@
 import { ISyntaxToken } from "../interfaces";
-import { SyntaxNode } from "../parsing/syntaxNode";
 import { SyntaxType } from "./syntax-type";
+import { SyntaxNode } from "./syntaxNode";
 
 export class SyntaxToken extends SyntaxNode implements ISyntaxToken{
 

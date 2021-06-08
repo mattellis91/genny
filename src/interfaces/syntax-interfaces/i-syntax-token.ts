@@ -1,4 +1,4 @@
-import { SyntaxType } from "../../lexing";
+import { SyntaxType } from "../../syntax/syntax-type";
 
 export interface ISyntaxToken {
     position:number;

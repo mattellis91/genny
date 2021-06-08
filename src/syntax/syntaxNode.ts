@@ -1,5 +1,5 @@
 import { ISyntaxNode } from "../interfaces";
-import { SyntaxType } from "../lexing/syntax-type";
+import { SyntaxType } from "./syntax-type";
 
 export abstract class SyntaxNode implements ISyntaxNode {
     public abstract type:SyntaxType;

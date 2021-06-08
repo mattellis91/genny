@@ -1,4 +1,4 @@
-import { SyntaxType } from "../lexing/syntax-type";
+import { SyntaxType } from "./syntax-type";
 
 export class SyntaxSettings {
     public static getBinaryOperatorPrecedence(type: SyntaxType) {

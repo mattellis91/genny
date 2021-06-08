@@ -1,6 +1,6 @@
-import { IBinaryExpressionSyntax, IUnaryExpressionSyntax } from "../interfaces";
-import { SyntaxType } from "../lexing";
+import { IUnaryExpressionSyntax } from "../interfaces";
 import { ExpressionSyntax } from "./expressionSyntax";
+import { SyntaxType } from "./syntax-type";
 import { SyntaxNode } from "./syntaxNode";
 
 export class UnaryExpressionSyntax extends ExpressionSyntax implements IUnaryExpressionSyntax {

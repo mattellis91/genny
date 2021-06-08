@@ -1,3 +1,6 @@
+export * from './lexer';
+export * from './syntax-token';
+export * from './syntax-type';
 export * from './parser';
 export * from './syntaxNode';
 export * from './literalExpressionSyntax';
@@ -5,6 +8,5 @@ export * from './parenthesizedExpressionSyntax';
 export * from './expressionSyntax';
 export * from './binaryExpressionSyntax';
 export * from './syntaxTree';
-export * from './evaluator';
 export * from './syntaxSettings';
 export * from './unaryExpressionSyntax';

@@ -1,4 +1,4 @@
-import { ILexer } from "../interfaces";
+import { ILexer } from "../interfaces/syntax-interfaces/i-lexer";
 import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";
 

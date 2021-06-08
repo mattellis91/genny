@@ -1,5 +1,5 @@
-import { SyntaxToken } from "../../lexing/syntax-token";
-import { ExpressionSyntax } from "../../parsing/expressionSyntax";
+import { ExpressionSyntax } from "../../syntax/expressionSyntax";
+import { SyntaxToken } from "../../syntax/syntax-token";
 
 export interface IParenthesizedExpressionSyntax {
     openParenthesisToken:SyntaxToken;

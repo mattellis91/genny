@@ -1,7 +1,7 @@
 import { ISyntaxTree } from "../interfaces";
-import { SyntaxToken } from "../lexing";
 import { ExpressionSyntax } from "./expressionSyntax";
 import { Parser } from "./parser";
+import { SyntaxToken } from "./syntax-token";
 
 export class SyntaxTree implements ISyntaxTree {
     public root:ExpressionSyntax;

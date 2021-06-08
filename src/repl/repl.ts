@@ -1,12 +1,11 @@
 import { IRepl } from "../interfaces/repl-interaces";
 import * as readlineSync from "readline-sync";
 import { Util } from "../util/util";
-import { Evaluator, SyntaxTree } from "../parsing";
+import { Evaluator } from "../evaluation/evaluator";
+import { SyntaxTree } from "../syntax/syntaxTree";
 
 export class Repl implements IRepl{
     constructor() {}
-
-
 
     main():void {
         let showTree = false;

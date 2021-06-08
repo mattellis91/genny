@@ -1,4 +1,3 @@
-import { LiteralExpressionSyntax } from "../parsing";
 
 export enum SyntaxType {
     NumberToken = "NumberToken",

@@ -1,5 +1,5 @@
-import { SyntaxNode } from "../parsing/syntaxNode";
 import * as colors from 'colors/safe';
+import { SyntaxNode } from '../syntax/syntaxNode';
 
 export class Util {
 

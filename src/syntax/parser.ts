@@ -1,9 +1,12 @@
-import { IParser } from "../interfaces/parsing-interfaces/i-parser";
-import { Lexer, SyntaxToken, SyntaxType } from "../lexing";
+
+import { IParser } from "../interfaces/syntax-interfaces/i-parser";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
+import { Lexer } from "./lexer";
 import { LiteralExpressionSyntax } from "./literalExpressionSyntax";
 import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
+import { SyntaxToken } from "./syntax-token";
+import { SyntaxType } from "./syntax-type";
 import { SyntaxSettings } from "./syntaxSettings";
 import { SyntaxTree } from "./syntaxTree";
 import { UnaryExpressionSyntax } from "./unaryExpressionSyntax";

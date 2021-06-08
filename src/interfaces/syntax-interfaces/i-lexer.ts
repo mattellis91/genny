@@ -1,4 +1,4 @@
-import { SyntaxToken } from "../../lexing/syntax-token";
+import { SyntaxToken } from "../../syntax/syntax-token";
 
 export interface ILexer {
     diagnostics:string[];

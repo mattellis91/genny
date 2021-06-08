@@ -1,10 +1,11 @@
-import { IEvaluator } from "../interfaces";
-import { SyntaxType } from "../lexing";
-import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
-import { ExpressionSyntax } from "./expressionSyntax";
-import { LiteralExpressionSyntax } from "./literalExpressionSyntax";
-import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
-import { UnaryExpressionSyntax } from "./unaryExpressionSyntax";
+import { IEvaluator } from "../interfaces/evaluation-interfaces/i-evaluator";
+import { BinaryExpressionSyntax } from "../syntax/binaryExpressionSyntax";
+import { ExpressionSyntax } from "../syntax/expressionSyntax";
+import { LiteralExpressionSyntax } from "../syntax/literalExpressionSyntax";
+import { ParenthesizedExpressionSyntax } from "../syntax/parenthesizedExpressionSyntax";
+import { SyntaxType } from "../syntax/syntax-type";
+import { UnaryExpressionSyntax } from "../syntax/unaryExpressionSyntax";
+
 
 export class Evaluator implements IEvaluator {
     private readonly _root;

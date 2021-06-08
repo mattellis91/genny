@@ -1,6 +1,6 @@
-import { IBinaryExpressionSyntax } from "../interfaces";
-import { SyntaxType } from "../lexing";
+import { IBinaryExpressionSyntax } from "../interfaces/syntax-interfaces/i-binaryExpressionSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
+import { SyntaxType } from "./syntax-type";
 import { SyntaxNode } from "./syntaxNode";
 
 export class BinaryExpressionSyntax extends ExpressionSyntax implements IBinaryExpressionSyntax {

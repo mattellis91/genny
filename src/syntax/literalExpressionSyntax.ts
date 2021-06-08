@@ -1,6 +1,7 @@
 import { ILiteralExpressionSyntax } from "../interfaces";
-import { SyntaxToken, SyntaxType } from "../lexing";
 import { ExpressionSyntax } from "./expressionSyntax";
+import { SyntaxToken } from "./syntax-token";
+import { SyntaxType } from "./syntax-type";
 import { SyntaxNode } from "./syntaxNode";
 
 export class LiteralExpressionSyntax extends ExpressionSyntax implements ILiteralExpressionSyntax {
