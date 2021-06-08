@@ -4,7 +4,9 @@ import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
 import { LiteralExpressionSyntax } from "./literalExpressionSyntax";
 import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
+import { SyntaxSettings } from "./syntaxSettings";
 import { SyntaxTree } from "./syntaxTree";
+import { UnaryExpressionSyntax } from "./unaryExpressionSyntax";
 
 export class Parser implements IParser {
 
@@ -69,9 +71,19 @@ export class Parser implements IParser {
 
 
     private parseExpression(parentPrecedence:number = 0): ExpressionSyntax {
-        let left = this.parsePrimaryExpression();
+
+        let left:ExpressionSyntax;
+        const unaryOperatorPrecedence = SyntaxSettings.getUnaryOperatorPrecedence(this.getCurrent().type);
+        if(unaryOperatorPrecedence !== 0 && unaryOperatorPrecedence >= parentPrecedence) {
+            const operatorToken = this.nextToken();
+            const operand = this.parseExpression(unaryOperatorPrecedence);
+            left = new UnaryExpressionSyntax(operatorToken,operand);
+        } else {
+            left = this.parsePrimaryExpression();
+        }
+
         while(true) {
-            const precedence = this.getBinaryOperatorPrecedence(this.getCurrent().type);
+            const precedence = SyntaxSettings.getBinaryOperatorPrecedence(this.getCurrent().type);
             if(precedence === 0 || precedence <= parentPrecedence) {
                 break;
             }
@@ -84,18 +96,7 @@ export class Parser implements IParser {
         return left;
     }
 
-    private getBinaryOperatorPrecedence(type: SyntaxType) {
-        switch(type) {
-            case SyntaxType.StarToken:
-            case SyntaxType.SlashToken:
-                return 2;
-            case SyntaxType.PlusToken:
-            case SyntaxType.MinusToken:
-                return 1;
-            default:
-                return 0;                
-        }
-    }
+    
 
 
     public parse(): SyntaxTree {

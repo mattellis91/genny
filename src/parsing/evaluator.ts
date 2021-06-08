@@ -4,6 +4,7 @@ import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
 import { LiteralExpressionSyntax } from "./literalExpressionSyntax";
 import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
+import { UnaryExpressionSyntax } from "./unaryExpressionSyntax";
 
 export class Evaluator implements IEvaluator {
     private readonly _root;
@@ -16,11 +17,22 @@ export class Evaluator implements IEvaluator {
     }
 
     private evaluateExpression(node: ExpressionSyntax): number{
-        //binaryExpression
-        //NumberExpression
 
         if(node instanceof LiteralExpressionSyntax) {
             return node.literalToken.value as number;
+        }
+
+        if(node instanceof UnaryExpressionSyntax) {
+            const operand = this.evaluateExpression(node.operand);
+
+            switch(node.operatorToken.type) {
+                case SyntaxType.PlusToken:
+                    return operand;
+                case SyntaxType.MinusToken:
+                    return -operand;
+                default:
+                    throw new Error("ERROR: Unexpected unary operator: " + node.operatorToken.type);
+            }
         }
 
         if(node instanceof BinaryExpressionSyntax) {

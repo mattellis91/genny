@@ -15,6 +15,6 @@ export enum SyntaxType {
     NumberExpression = "NumberExpression",
     BinaryExpression = "BinaryExpression",
     ParenthesizedExpression = "ParenthesizedExpression",
-    LiteralExpression = "LiteralExpression"
-
+    LiteralExpression = "LiteralExpression",
+    UnaryExpression = "UnaryExpression"
 };

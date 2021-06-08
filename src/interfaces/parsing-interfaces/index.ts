@@ -6,3 +6,4 @@ export * from './i-binaryExpressionSyntax';
 export * from './i-syntax-tree';
 export * from './i-evaluator';
 export * from './i-parenthesizedExpressionSyntax';
+export * from './i-unaryExpressionSyntax';
