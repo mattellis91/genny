@@ -1,3 +1,4 @@
+import { BoundNodeType } from "../../binding/boundNodeType";
 import { ExpressionSyntax } from "../../syntax/expressionSyntax";
 import { SyntaxNode } from "../../syntax/syntaxNode";
 

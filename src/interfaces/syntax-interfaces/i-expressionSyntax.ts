@@ -1,3 +1,1 @@
-export interface IExpressionSyntax {
-    
-}
+export interface IExpressionSyntax {}

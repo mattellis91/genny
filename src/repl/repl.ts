@@ -3,6 +3,7 @@ import * as readlineSync from "readline-sync";
 import { Util } from "../util/util";
 import { Evaluator } from "../evaluation/evaluator";
 import { SyntaxTree } from "../syntax/syntaxTree";
+import { Binder } from "../binding/binder";
 
 export class Repl implements IRepl{
     constructor() {}
@@ -24,17 +25,20 @@ export class Repl implements IRepl{
             }
 
             const syntaxTree = SyntaxTree.parse(input);
-
+            const binder = new Binder();
+            const boundExpression= binder.bindExpression(syntaxTree.root);
+            const diagnostics = [...syntaxTree.diagnostics, ...binder.diagnostics]; 
+            
             if(showTree) {
                 Util.prettyPrint(syntaxTree.root);
             }
 
-            if(syntaxTree.diagnostics.length) {
-                for(const diagnostic of syntaxTree.diagnostics) {
+            if(diagnostics.length) {
+                for(const diagnostic of diagnostics) {
                     Util.logErrorMessage(diagnostic);
                 }
             } else {
-                const evaluator = new Evaluator(syntaxTree.root); 
+                const evaluator = new Evaluator(boundExpression); 
                 const result = evaluator.evaluate();
                 console.log(result);
             }

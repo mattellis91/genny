@@ -4,7 +4,7 @@ import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";
 import { SyntaxNode } from "./syntaxNode";
 
-export class LiteralExpressionSyntax extends ExpressionSyntax implements ILiteralExpressionSyntax {
+export class    LiteralExpressionSyntax extends ExpressionSyntax implements ILiteralExpressionSyntax {
     public type = SyntaxType.LiteralExpression
     public literalToken:SyntaxToken;
     constructor(literalToken: SyntaxToken) {
