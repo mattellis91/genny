@@ -18,18 +18,18 @@ export class Evaluator implements IEvaluator {
         this._root = root;
     }
 
-    public evaluate():number {
+    public evaluate():any {
         return this.evaluateExpression(this._root);
     }
 
-    private evaluateExpression(node: BoundExpression): number{
+    private evaluateExpression(node: BoundExpression): any{
 
         if(node instanceof BoundLiteralExpression) {
-            return node.value as number;
+            return node.value;
         }
 
         if(node instanceof BoundUnaryExpression) {
-            const operand = this.evaluateExpression(node.operand);
+            const operand = this.evaluateExpression(node.operand) as number;
 
             switch(node.operatorType) {
                 case BoundUnaryOperatorType.Identity:
@@ -42,8 +42,8 @@ export class Evaluator implements IEvaluator {
         }
 
         if(node instanceof BoundBinaryExpression) {
-            const left = this.evaluateExpression(node.left);
-            const right = this.evaluateExpression(node.right);
+            const left = this.evaluateExpression(node.left) as number;
+            const right = this.evaluateExpression(node.right) as number;
        
             switch(node.operatorType) {
                 case BoundBinaryOperatorType.Addition:

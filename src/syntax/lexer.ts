@@ -1,6 +1,7 @@
 import { ILexer } from "../interfaces/syntax-interfaces/i-lexer";
 import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";
+import { SyntaxHelper } from "./syntaxHelper";
 
 export class Lexer implements ILexer{
 
@@ -48,7 +49,8 @@ export class Lexer implements ILexer{
           );
     }
 
-    public nextToken() : SyntaxToken {
+
+    public lex() : SyntaxToken {
 
         //End of file
         if(this._position >= this._text.length) {
@@ -83,6 +85,18 @@ export class Lexer implements ILexer{
             const text = this._text.substring(start, start + length);
             const value = Number.parseInt(text);
             return new SyntaxToken(SyntaxType.WhitespaceToken, start, text, null);
+        }
+
+        //get keyword token
+        if(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))) {
+            const start = this._position;
+            while(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))){
+                this.next();
+            }
+            const length = this._position - start;
+            const text = this._text.substring(start, start + length);
+            const keywordType = SyntaxHelper.getKeywordType(text);
+            return new SyntaxToken(keywordType,start,text,null);
         }
 
         if(this.getCurrentChar() === '+') {           

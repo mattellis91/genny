@@ -1,5 +1,5 @@
 import { IBinder } from "../interfaces/binding-interfaces/i-binder";
-import { BinaryExpressionSyntax, ExpressionSyntax, LiteralExpressionSyntax, SyntaxType, UnaryExpressionSyntax } from "../syntax";
+import { BinaryExpressionSyntax, ExpressionSyntax, LiteralExpressionSyntax, SyntaxHelper, SyntaxType, UnaryExpressionSyntax } from "../syntax";
 import { BoundBinaryExpression } from "./boundBinaryExpression";
 import { BoundBinaryOperatorType } from "./boundBinaryOperatorType";
 import { BoundExpression } from "./boundExpression";
@@ -29,7 +29,7 @@ export class Binder implements IBinder {
         const boundRight = this.bindExpression(syntax.right);
         const boundOperatorType = this.bindBinaryOperatorType(syntax.operatorToken.type, boundLeft.type, boundRight.type); 
         if(boundOperatorType === null) {
-            this.diagnostics.push("ERROR: Binary operator '" + syntax.operatorToken + "' is not defined for type " + boundLeft.type + " and " + boundRight.type);
+            this.diagnostics.push("ERROR: Binary operator '" + SyntaxHelper.getSyntaxTypeText(syntax.operatorToken.type) + "' is not defined for type " + boundLeft.type + " and type " + boundRight.type);
             return boundLeft;
         }
         return new BoundBinaryExpression(boundLeft, boundOperatorType, boundRight);
@@ -61,7 +61,7 @@ export class Binder implements IBinder {
         const boundOperand = this.bindExpression(syntax.operand);
         const boundOperatorType = this.bindUnaryOperatorType(syntax.operatorToken.type, boundOperand.type);
         if(boundOperatorType === null) {
-            this.diagnostics.push("ERROR: Unary operator '" + syntax.operatorToken + "' is not defined for type " + boundOperand.type);
+            this.diagnostics.push("ERROR: Unary operator '" + SyntaxHelper.getSyntaxTypeText(syntax.operatorToken.type) + "' is not defined for type " + boundOperand.type);
             return boundOperand;
         }
         return new BoundUnaryExpression(boundOperatorType, boundOperand);
@@ -84,7 +84,7 @@ export class Binder implements IBinder {
     }
 
     private bindLiteralExpression(syntax:LiteralExpressionSyntax) : BoundExpression{
-        const value = syntax.literalToken.value as number ?? 0;   
+        const value = syntax.value ?? 0;   
         return new BoundLiteralExpression(value);     
     }
 } 

@@ -7,7 +7,7 @@ import { LiteralExpressionSyntax } from "./literalExpressionSyntax";
 import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
 import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";
-import { SyntaxSettings } from "./syntaxSettings";
+import { SyntaxHelper } from "./syntaxHelper";
 import { SyntaxTree } from "./syntaxTree";
 import { UnaryExpressionSyntax } from "./unaryExpressionSyntax";
 
@@ -22,7 +22,7 @@ export class Parser implements IParser {
         const lexer = new Lexer(text);
         let token:SyntaxToken;
         do {
-            token = lexer.nextToken();
+            token = lexer.lex();
             if(token.type !== SyntaxType.WhitespaceToken && token.type !== SyntaxType.UnknownToken) {
                 tokens.push(token);
             }
@@ -53,14 +53,24 @@ export class Parser implements IParser {
     
     private parsePrimaryExpression(): ExpressionSyntax{
 
-        if(this.getCurrent().type === SyntaxType.OpenParenthesisToken) {
-            const left = this.nextToken();
-            const expression = this.parseExpression();
-            const right = this.match(SyntaxType.CloseParenthesisToken);
-            return new ParenthesizedExpressionSyntax(left,expression,right);
+        switch(this.getCurrent().type) {
+            case SyntaxType.OpenParenthesisToken:
+                const left = this.nextToken();
+                const expression = this.parseExpression();
+                const right = this.match(SyntaxType.CloseParenthesisToken);
+                return new ParenthesizedExpressionSyntax(left,expression,right);
+
+            case SyntaxType.TrueKeyword:
+            case SyntaxType.FalseKeyword:
+                const keywordToken = this.nextToken();
+                const value = this.getCurrent().type === SyntaxType.TrueKeyword;
+                return new LiteralExpressionSyntax(keywordToken, value);
+                
+            default:
+                const numberToken = this.match(SyntaxType.NumberToken);
+                return new LiteralExpressionSyntax(numberToken) 
+
         }
-        const numberToken = this.match(SyntaxType.NumberToken);
-        return new LiteralExpressionSyntax(numberToken);
     }
 
     private match(type:SyntaxType): SyntaxToken {
@@ -76,7 +86,7 @@ export class Parser implements IParser {
     private parseExpression(parentPrecedence:number = 0): ExpressionSyntax {
 
         let left:ExpressionSyntax;
-        const unaryOperatorPrecedence = SyntaxSettings.getUnaryOperatorPrecedence(this.getCurrent().type);
+        const unaryOperatorPrecedence = SyntaxHelper.getUnaryOperatorPrecedence(this.getCurrent().type);
         if(unaryOperatorPrecedence !== 0 && unaryOperatorPrecedence >= parentPrecedence) {
             const operatorToken = this.nextToken();
             const operand = this.parseExpression(unaryOperatorPrecedence);
@@ -86,7 +96,7 @@ export class Parser implements IParser {
         }
 
         while(true) {
-            const precedence = SyntaxSettings.getBinaryOperatorPrecedence(this.getCurrent().type);
+            const precedence = SyntaxHelper.getBinaryOperatorPrecedence(this.getCurrent().type);
             if(precedence === 0 || precedence <= parentPrecedence) {
                 break;
             }

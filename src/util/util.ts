@@ -1,4 +1,4 @@
-import * as colors from 'colors/safe';
+import colors from 'colors/safe';
 import { SyntaxNode } from '../syntax/syntaxNode';
 
 export class Util {

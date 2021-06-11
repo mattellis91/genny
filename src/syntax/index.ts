@@ -8,5 +8,5 @@ export * from './parenthesizedExpressionSyntax';
 export * from './expressionSyntax';
 export * from './binaryExpressionSyntax';
 export * from './syntaxTree';
-export * from './syntaxSettings';
+export * from './syntaxHelper';
 export * from './unaryExpressionSyntax';
