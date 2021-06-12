@@ -109,9 +109,6 @@ export class Parser implements IParser {
         return left;
     }
 
-    
-
-
     public parse(): SyntaxTree {
         const expression = this.parseExpression();
         const eof = this.match(SyntaxType.EOFToken);

@@ -5,6 +5,7 @@ export class SyntaxHelper {
         switch(type) {
             case SyntaxType.StarToken:
             case SyntaxType.SlashToken:
+            case SyntaxType.ModToken:
                 return 2;
             case SyntaxType.PlusToken:
             case SyntaxType.MinusToken:
