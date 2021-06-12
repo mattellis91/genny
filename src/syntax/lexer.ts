@@ -1,3 +1,5 @@
+import { DiagnosticBag } from "../compilation/diagnosticBag";
+import { TextSpan } from "../compilation/textSpan";
 import { ILexer } from "../interfaces/syntax-interfaces/i-lexer";
 import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";
@@ -7,7 +9,7 @@ export class Lexer implements ILexer{
 
     private readonly _text:string;
     private _position:number = 0;
-    public diagnostics:string[] = [];
+    public diagnosticBag:DiagnosticBag = new DiagnosticBag();
 
     constructor(text:string) {
         this._text = text;
@@ -77,7 +79,7 @@ export class Lexer implements ILexer{
             const text = this._text.substring(start, start + length);
             const value = Number.parseInt(text);
             if(isNaN(value)) {
-                this.diagnostics.push("ERROR: The number " + text + " cannot be represented as a number");
+                this.diagnosticBag.reportInvalidNumber(new TextSpan(start,length), this._text, typeof(1));
             }
             return new SyntaxToken(SyntaxType.NumberToken, start, text, value);
         }
@@ -144,7 +146,7 @@ export class Lexer implements ILexer{
         }
 
         //unknown token
-        this.diagnostics.push("ERROR: bad character in input: " + this.getCurrentChar());
+        this.diagnosticBag.reportUnkownCharacter(this._position, this.getCurrentChar());
         return new SyntaxToken(SyntaxType.UnknownToken, this._position++, this._text.substring(this._position - 1, 1), null);
     }
 }

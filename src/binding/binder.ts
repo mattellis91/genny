@@ -1,17 +1,16 @@
+import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IBinder } from "../interfaces/binding-interfaces/i-binder";
-import { BinaryExpressionSyntax, ExpressionSyntax, LiteralExpressionSyntax, SyntaxHelper, SyntaxType, UnaryExpressionSyntax } from "../syntax";
+import { BinaryExpressionSyntax, ExpressionSyntax, LiteralExpressionSyntax, SyntaxType, UnaryExpressionSyntax } from "../syntax";
 import { BoundBinaryExpression } from "./boundBinaryExpression";
 import { BoundBinaryOperator } from "./boundBinaryOperator";
-import { BoundBinaryOperatorType } from "./boundBinaryOperatorType";
 import { BoundExpression } from "./boundExpression";
 import { BoundLiteralExpression } from "./boundLiteralExpression";
 import { BoundUnaryExpression } from "./boundUnaryExpression";
 import { BoundUnaryOperator } from "./boundUnaryOperator";
-import { BoundUnaryOperatorType } from "./boundUnaryOperatorType";
 
 export class Binder implements IBinder {
 
-    public diagnostics:string[] = [];
+    public diagnosticBag:DiagnosticBag = new DiagnosticBag();
 
     public bindExpression(syntax:ExpressionSyntax) : BoundExpression {
         switch(syntax.type) {
@@ -31,7 +30,7 @@ export class Binder implements IBinder {
         const boundRight = this.bindExpression(syntax.right);
         const boundOperator = BoundBinaryOperator.bind(syntax.operatorToken.type, boundLeft.type, boundRight.type); 
         if(boundOperator === null) {
-            this.diagnostics.push("ERROR: Binary operator '" + SyntaxHelper.getSyntaxTypeText(syntax.operatorToken.type) + "' is not defined for type " + boundLeft.type + " and type " + boundRight.type);
+            this.diagnosticBag.reportUndefinedBinaryExpression(syntax.operatorToken.span, syntax.operatorToken.text as string, boundLeft.type, boundRight.type);
             return boundLeft;
         }
         return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
@@ -41,7 +40,7 @@ export class Binder implements IBinder {
         const boundOperand = this.bindExpression(syntax.operand);
         const boundOperator = BoundUnaryOperator.bind(syntax.operatorToken.type, boundOperand.type);
         if(boundOperator === null) {
-            this.diagnostics.push("ERROR: Unary operator '" + SyntaxHelper.getSyntaxTypeText(syntax.operatorToken.type) + "' is not defined for type " + boundOperand.type);
+            this.diagnosticBag.reportUndefinedUnaryOperator(syntax.operatorToken.span, syntax.operatorToken.text as string, boundOperand.type);
             return boundOperand;
         }
         return new BoundUnaryExpression(boundOperator, boundOperand);

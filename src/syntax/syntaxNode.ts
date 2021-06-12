@@ -1,3 +1,4 @@
+import { TextSpan } from "../compilation/textSpan";
 import { ISyntaxNode } from "../interfaces";
 import { SyntaxType } from "./syntax-type";
 

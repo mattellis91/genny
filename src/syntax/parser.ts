@@ -1,4 +1,6 @@
 
+import { Diagnostic } from "../compilation/diagnostic";
+import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IParser } from "../interfaces/syntax-interfaces/i-parser";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
@@ -15,7 +17,7 @@ export class Parser implements IParser {
 
     private readonly _tokens:SyntaxToken[];
     private _position:number = 0;
-    public diagnostics:string[] = [];
+    public diagnosticBag:DiagnosticBag = new DiagnosticBag();
 
     constructor(text:string) {
         const tokens:SyntaxToken[] =  [];
@@ -29,7 +31,7 @@ export class Parser implements IParser {
         } while(token.type !== SyntaxType.EOFToken);
 
         this._tokens = tokens;
-        this.diagnostics = [...lexer.diagnostics];
+        this.diagnosticBag.addRange(lexer.diagnosticBag);
     }
 
     private peek(offset:number):SyntaxToken {
@@ -55,7 +57,7 @@ export class Parser implements IParser {
 
         switch(this.getCurrent().type) {
             case SyntaxType.OpenParenthesisToken:
-                const left = this.nextToken();
+                const left = this.nextToken(); 
                 const expression = this.parseExpression();
                 const right = this.match(SyntaxType.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left,expression,right);
@@ -74,11 +76,12 @@ export class Parser implements IParser {
     }
 
     private match(type:SyntaxType): SyntaxToken {
-        if(this.getCurrent().type === type) {
+        const current = this.getCurrent();
+        if(current.type === type) {
             return this.nextToken();
         }
 
-        this.diagnostics.push("ERROR: Unexpected token <" + this.getCurrent().type + ">, expected <" + type + ">");
+        this.diagnosticBag.reportUnexpectedToken(current.span, current.type, type);
         return new SyntaxToken(type, this.getCurrent().position, null, null)
     }
 
@@ -112,6 +115,6 @@ export class Parser implements IParser {
     public parse(): SyntaxTree {
         const expression = this.parseExpression();
         const eof = this.match(SyntaxType.EOFToken);
-        return new SyntaxTree(expression, eof, this.diagnostics);
+        return new SyntaxTree(expression, eof, this.diagnosticBag.diagnostics);
     }
 }    

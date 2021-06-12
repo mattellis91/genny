@@ -1,3 +1,4 @@
+import { TextSpan } from "../../compilation/textSpan";
 import { SyntaxType } from "../../syntax/syntax-type";
 
 export interface ISyntaxToken {
@@ -5,4 +6,5 @@ export interface ISyntaxToken {
     text:string | null;
     type:SyntaxType;
     value: number | string | null;
+    span:TextSpan;
 }
