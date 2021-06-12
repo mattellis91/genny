@@ -84,7 +84,7 @@ export class Binder implements IBinder {
     }
 
     private bindLiteralExpression(syntax:LiteralExpressionSyntax) : BoundExpression{
-        const value = syntax.value ?? 0;   
+        const value = syntax.value !== null ? syntax.value : syntax.literalToken.value ?? 0;   
         return new BoundLiteralExpression(value);     
     }
 } 

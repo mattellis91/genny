@@ -70,7 +70,6 @@ export class Lexer implements ILexer{
             if(isNaN(value)) {
                 this.diagnostics.push("ERROR: The number " + text + " cannot be represented as a number");
             }
-
             return new SyntaxToken(SyntaxType.NumberToken, start, text, value);
         }
 
@@ -83,7 +82,6 @@ export class Lexer implements ILexer{
             const length = this._position - start;
             
             const text = this._text.substring(start, start + length);
-            const value = Number.parseInt(text);
             return new SyntaxToken(SyntaxType.WhitespaceToken, start, text, null);
         }
 
@@ -96,29 +94,24 @@ export class Lexer implements ILexer{
             const length = this._position - start;
             const text = this._text.substring(start, start + length);
             const keywordType = SyntaxHelper.getKeywordType(text);
-            return new SyntaxToken(keywordType,start,text,null);
+            return new SyntaxToken(keywordType,start,text, null);
         }
 
-        if(this.getCurrentChar() === '+') {           
-            return new SyntaxToken(SyntaxType.PlusToken, this._position++, "+", null);
-        }
-        if(this.getCurrentChar() === '-') {           
-            return new SyntaxToken(SyntaxType.MinusToken, this._position++, "-", null);
-        }
-        if(this.getCurrentChar() === '*') {           
-            return new SyntaxToken(SyntaxType.StarToken, this._position++, "*", null);
-        }
-        if(this.getCurrentChar() === '/') {           
-            return new SyntaxToken(SyntaxType.SlashToken, this._position++, "/", null);
-        }
-        if(this.getCurrentChar() === '(') {           
-            return new SyntaxToken(SyntaxType.OpenParenthesisToken, this._position++, "(", null);
-        }
-        if(this.getCurrentChar() === ')') {           
-            return new SyntaxToken(SyntaxType.CloseParenthesisToken, this._position++, ")", null);
-        }
-        if(this.getCurrentChar() === '%') {           
-            return new SyntaxToken(SyntaxType.ModToken, this._position++, "%", null);
+        switch(this.getCurrentChar()) {
+            case '+':
+                return new SyntaxToken(SyntaxType.PlusToken, this._position++, "+", null);
+            case '-':
+                return new SyntaxToken(SyntaxType.MinusToken, this._position++, "-", null);
+            case '*':
+                return new SyntaxToken(SyntaxType.StarToken, this._position++, "*", null);
+            case '/':
+                return new SyntaxToken(SyntaxType.SlashToken, this._position++, "/", null);
+            case '(':
+                return new SyntaxToken(SyntaxType.OpenParenthesisToken, this._position++, "(", null);
+            case ')':
+                return new SyntaxToken(SyntaxType.CloseParenthesisToken, this._position++, ")", null);
+            case '%':
+                return new SyntaxToken(SyntaxType.ModToken, this._position++, "%", null);
         }
 
         //unknown token

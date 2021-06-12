@@ -63,9 +63,9 @@ export class Parser implements IParser {
             case SyntaxType.TrueKeyword:
             case SyntaxType.FalseKeyword:
                 const keywordToken = this.nextToken();
-                const value = this.getCurrent().type === SyntaxType.TrueKeyword;
+                const value = keywordToken.type === SyntaxType.TrueKeyword;
                 return new LiteralExpressionSyntax(keywordToken, value);
-                
+
             default:
                 const numberToken = this.match(SyntaxType.NumberToken);
                 return new LiteralExpressionSyntax(numberToken) 
