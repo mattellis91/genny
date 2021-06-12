@@ -47,60 +47,6 @@ export class Binder implements IBinder {
         return new BoundUnaryExpression(boundOperator, boundOperand);
     }
 
-    private bindBinaryOperatorType(type:SyntaxType, leftType:string, rightType:string): BoundBinaryOperatorType | null {
-
-        if(leftType === 'number' && rightType === 'number') {
-            switch(type) {
-                case SyntaxType.PlusToken:
-                    return BoundBinaryOperatorType.Addition;
-                case SyntaxType.MinusToken:
-                    return BoundBinaryOperatorType.Subtraction;
-                case SyntaxType.StarToken:
-                    return BoundBinaryOperatorType.Multiplication;
-                case SyntaxType.SlashToken:
-                    return BoundBinaryOperatorType.Division;
-                case SyntaxType.ModToken:
-                    return BoundBinaryOperatorType.Modulus;
-            }
-        }
-
-        if(leftType === 'boolean' && rightType === 'boolean') {
-            switch(type) {
-                case SyntaxType.AmpersandAmpersandToken:
-                    return BoundBinaryOperatorType.LogicalAnd;
-                case SyntaxType.PipePipeToken:
-                    return BoundBinaryOperatorType.LogicalOr;
-            }
-        }
-        
-        return null;
-        
-
-        
-    }
-
-    private bindUnaryOperatorType(type:SyntaxType, operandType:string): BoundUnaryOperatorType | null {
-
-        if(operandType === 'number') { 
-            switch(type) {
-                case SyntaxType.PlusToken:
-                    return BoundUnaryOperatorType.Identity;
-                case SyntaxType.MinusToken:
-                    return BoundUnaryOperatorType.Negation;
-            }
-        } 
-
-        if(operandType === 'boolean') {
-            switch(type) {
-                case SyntaxType.BangToken:
-                    return BoundUnaryOperatorType.LogicalNegation;
-            }
-        }
-        
-        return null;
-
-    }
-
     private bindLiteralExpression(syntax:LiteralExpressionSyntax) : BoundExpression{
         const value = syntax.value !== null ? syntax.value : syntax.literalToken.value ?? 0;   
         return new BoundLiteralExpression(value);     
