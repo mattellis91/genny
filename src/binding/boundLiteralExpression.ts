@@ -11,7 +11,7 @@ export class BoundLiteralExpression extends BoundExpression implements IBoundLit
     constructor(value:any) {
         super();
         this.value = value;
-        this.type = this.getType(value);
+        this.type = this.getLiteralType(value);
     }
 
 }

@@ -55,6 +55,12 @@ export class Evaluator implements IEvaluator {
                     return (left as boolean) && (right as boolean);
                 case BoundBinaryOperatorType.LogicalOr:
                     return (left as boolean) || (right as boolean);
+                case BoundBinaryOperatorType.LogicalOr:
+                    return (left as boolean) || (right as boolean);
+                case BoundBinaryOperatorType.Equals:
+                    return left === right;
+                case BoundBinaryOperatorType.NotEquals:
+                    return left !== right;
                 default:
                     throw new Error("ERROR: Unexpected binary expression operator: " + node.operator.boundBinaryOperatorType);
             }

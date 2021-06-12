@@ -14,7 +14,7 @@ export class BoundUnaryExpression extends BoundExpression implements IBoundUnrar
         super();
         this.operator = operator;
         this.operand = operand;
-        this.type = this.getType(operand);
+        this.type = this.getOperatorType(this.operator);
     }
 
     

@@ -17,7 +17,8 @@ export class BoundBinaryExpression extends BoundExpression implements IBoundBina
         this.operator = operator;
         this.left = left;
         this.right = right;
-        this.type = this.getType(left);
+        this.type = this.getOperatorType(this.operator);
+        
     }
    
 }

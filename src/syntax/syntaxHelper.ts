@@ -7,7 +7,7 @@ export class SyntaxHelper {
             case SyntaxType.PlusToken:
             case SyntaxType.MinusToken:
             case SyntaxType.BangToken: 
-                return 5; 
+                return 6; 
             default:
                 return 0;
         }
@@ -18,9 +18,12 @@ export class SyntaxHelper {
             case SyntaxType.StarToken:
             case SyntaxType.SlashToken:
             case SyntaxType.ModToken:
-                return 4;
+                return 5;
             case SyntaxType.PlusToken:
             case SyntaxType.MinusToken:
+                return 4;
+            case SyntaxType.EqualsEqualsToken:
+            case SyntaxType.BangEqualsToken:
                 return 3;
             case SyntaxType.AmpersandAmpersandToken:
                 return 2;

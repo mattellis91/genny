@@ -5,5 +5,7 @@ export enum BoundBinaryOperatorType {
     Division = 'Division',
     Modulus = "Modulus",
     LogicalAnd = "LogicalAnd",
-    LogicalOr = "LogicalOr"
+    LogicalOr = "LogicalOr",
+    Equals = "Equals",
+    NotEquals = "NotEquals"
 }

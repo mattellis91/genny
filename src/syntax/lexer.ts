@@ -121,8 +121,6 @@ export class Lexer implements ILexer{
                 return new SyntaxToken(SyntaxType.CloseParenthesisToken, this._position++, ")", null);
             case '%':
                 return new SyntaxToken(SyntaxType.ModToken, this._position++, "%", null);
-            case '!':
-                return new SyntaxToken(SyntaxType.BangToken, this._position++, '!', null);
             case '&':
                 if(this.lookAhead() === '&') {
                     return new SyntaxToken(SyntaxType.AmpersandAmpersandToken, this._position+=2, '&&', null);
@@ -133,6 +131,16 @@ export class Lexer implements ILexer{
                     return new SyntaxToken(SyntaxType.PipePipeToken, this._position+=2, '||', null);
                 }
                 break;
+            case '=':
+                if(this.lookAhead() === '=') {
+                    return new SyntaxToken(SyntaxType.EqualsEqualsToken, this._position+=2, '==', null);
+                }
+                break;
+            case '!':
+                if(this.lookAhead() === '=') {
+                    return new SyntaxToken(SyntaxType.BangEqualsToken, this._position+=2, '!=', null);
+                }
+                return new SyntaxToken(SyntaxType.BangToken, this._position++, '!', null);
         }
 
         //unknown token

@@ -17,6 +17,10 @@ export class BoundBinaryOperator implements IBoundBinaryOperator {
         new BoundBinaryOperator(SyntaxType.ModToken, BoundBinaryOperatorType.Modulus, typeof(1), typeof(1), typeof(1)),
         new BoundBinaryOperator(SyntaxType.AmpersandAmpersandToken, BoundBinaryOperatorType.LogicalAnd, typeof(true), typeof(true), typeof(true)),
         new BoundBinaryOperator(SyntaxType.PipePipeToken, BoundBinaryOperatorType.LogicalOr, typeof(true), typeof(true), typeof(true)),
+        new BoundBinaryOperator(SyntaxType.EqualsEqualsToken, BoundBinaryOperatorType.Equals, typeof(1), typeof(1), typeof(true)),
+        new BoundBinaryOperator(SyntaxType.BangEqualsToken, BoundBinaryOperatorType.NotEquals, typeof(1), typeof(1), typeof(true)),
+        new BoundBinaryOperator(SyntaxType.EqualsEqualsToken, BoundBinaryOperatorType.Equals, typeof(true), typeof(true), typeof(true)),
+        new BoundBinaryOperator(SyntaxType.BangEqualsToken, BoundBinaryOperatorType.NotEquals, typeof(true), typeof(true), typeof(true)),
     ]
 
     public static bind(syntaxType:SyntaxType, leftType:string, rightType:string):BoundBinaryOperator | null {
