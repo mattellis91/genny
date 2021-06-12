@@ -1,9 +1,9 @@
 import { BoundExpression } from "../../binding/boundExpression";
 import { BoundNodeType } from "../../binding/boundNodeType";
-import { BoundUnaryOperatorType } from "../../binding/boundUnaryOperatorType";
+import { BoundUnaryOperator } from "../../binding/boundUnaryOperator";
 
 export interface IBoundUnraryExpression {
-    operatorType:BoundUnaryOperatorType;
+    operator:BoundUnaryOperator;
     operand:BoundExpression;
     boundNodeType:BoundNodeType;
 }

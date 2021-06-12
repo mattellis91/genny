@@ -24,7 +24,7 @@ export class Evaluator implements IEvaluator {
         if(node instanceof BoundUnaryExpression) {
             const operand = this.evaluateExpression(node.operand);
 
-            switch(node.operatorType) {
+            switch(node.operator.boundUnaryOperatorType) {
                 case BoundUnaryOperatorType.Identity:
                     return operand as number;
                 case BoundUnaryOperatorType.Negation:
@@ -32,7 +32,7 @@ export class Evaluator implements IEvaluator {
                 case BoundUnaryOperatorType.LogicalNegation:
                     return !(operand as boolean);
                 default:
-                    throw new Error("ERROR: Unexpected unary operator: " + node.operatorType);
+                    throw new Error("ERROR: Unexpected unary operator: " + node.operator.boundUnaryOperatorType);
             }
         }
 
@@ -40,7 +40,7 @@ export class Evaluator implements IEvaluator {
             const left = this.evaluateExpression(node.left) ;
             const right = this.evaluateExpression(node.right);
        
-            switch(node.operatorType) {
+            switch(node.operator.boundBinaryOperatorType) {
                 case BoundBinaryOperatorType.Addition:
                     return (left as number) + (right as number); 
                 case BoundBinaryOperatorType.Subtraction:
@@ -56,7 +56,7 @@ export class Evaluator implements IEvaluator {
                 case BoundBinaryOperatorType.LogicalOr:
                     return (left as boolean) || (right as boolean);
                 default:
-                    throw new Error("ERROR: Unexpected binary expression operator: " + node.operatorType);
+                    throw new Error("ERROR: Unexpected binary expression operator: " + node.operator.boundBinaryOperatorType);
             }
         }
 
