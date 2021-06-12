@@ -14,15 +14,24 @@ export class Lexer implements ILexer{
     }
 
     private getCurrentChar(): string {
-        if(this._position >= this._text.length) {
-            return '\0';
-        } else {
-            return this._text[this._position];
-        }
+        return this.peek(0);
+    }
+
+    private lookAhead(): string {
+        return this.peek(1);
     }
 
     private next(): void {
         this._position++;
+    }
+
+    private peek(offset:number): string {
+        const index = this._position + offset;
+        if(index >= this._text.length) {
+            return '\0';
+        } else {
+            return this._text[index];
+        }
     }
 
     private charIsBlank(charCode:number) : boolean{
@@ -112,6 +121,18 @@ export class Lexer implements ILexer{
                 return new SyntaxToken(SyntaxType.CloseParenthesisToken, this._position++, ")", null);
             case '%':
                 return new SyntaxToken(SyntaxType.ModToken, this._position++, "%", null);
+            case '!':
+                return new SyntaxToken(SyntaxType.BangToken, this._position++, '!', null);
+            case '&':
+                if(this.lookAhead() === '&') {
+                    return new SyntaxToken(SyntaxType.AmpersandAmpersandToken, this._position+=2, '&&', null);
+                }
+                break;
+            case '|':
+                if(this.lookAhead() === '|') {
+                    return new SyntaxToken(SyntaxType.PipePipeToken, this._position+=2, '||', null);
+                }
+                break;
         }
 
         //unknown token

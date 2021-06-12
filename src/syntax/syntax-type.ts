@@ -1,6 +1,6 @@
 
 export enum SyntaxType {
-    
+
     //Tokens
     NumberToken = "NumberToken",
     WhitespaceToken = "WhitespaceToken",
@@ -14,7 +14,9 @@ export enum SyntaxType {
     UnknownToken = "UnknownToken",
     EOFToken = "EOFToken",
     IndetifierToken = "IndetifierToken",
-    
+    BangToken = "BangToken",
+    AmpersandAmpersandToken = "AmpersandAmpersandToken",
+    PipePipeToken = "PipePipeToken",
 
     //Expressions
     NumberExpression = "NumberExpression",
@@ -26,4 +28,5 @@ export enum SyntaxType {
     //Keywords
     TrueKeyword = "TrueKeyword",
     FalseKeyword = "FalseKeyword",
+    
 };

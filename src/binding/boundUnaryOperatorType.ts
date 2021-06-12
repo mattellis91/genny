@@ -1,4 +1,5 @@
 export enum BoundUnaryOperatorType {
     Identity = "Identity",
-    Negation = "Negation"
+    Negation = "Negation",
+    LogicalNegation = "LogicalNegation"
 }

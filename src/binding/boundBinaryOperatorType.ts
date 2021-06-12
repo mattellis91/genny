@@ -3,5 +3,7 @@ export enum BoundBinaryOperatorType {
     Subtraction = 'Subtraction',
     Multiplication = 'Multiplication',
     Division = 'Division',
-    Modulus = "Modulus"
+    Modulus = "Modulus",
+    LogicalAnd = "LogicalAnd",
+    LogicalOr = "LogicalOr"
 }

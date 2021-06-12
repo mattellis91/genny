@@ -1,27 +1,33 @@
 import { SyntaxType } from "./syntax-type";
 
 export class SyntaxHelper {
-    public static getBinaryOperatorPrecedence(type: SyntaxType): number {
-        switch(type) {
-            case SyntaxType.StarToken:
-            case SyntaxType.SlashToken:
-            case SyntaxType.ModToken:
-                return 2;
-            case SyntaxType.PlusToken:
-            case SyntaxType.MinusToken:
-                return 1;
-            default:
-                return 0;                
-        }
-    }
 
     public static getUnaryOperatorPrecedence(type: SyntaxType): number {
         switch(type) {
             case SyntaxType.PlusToken:
             case SyntaxType.MinusToken:
-                return 3; 
+            case SyntaxType.BangToken: 
+                return 5; 
             default:
                 return 0;
+        }
+    }
+
+    public static getBinaryOperatorPrecedence(type: SyntaxType): number {
+        switch(type) {
+            case SyntaxType.StarToken:
+            case SyntaxType.SlashToken:
+            case SyntaxType.ModToken:
+                return 4;
+            case SyntaxType.PlusToken:
+            case SyntaxType.MinusToken:
+                return 3;
+            case SyntaxType.AmpersandAmpersandToken:
+                return 2;
+            case SyntaxType.PipePipeToken:
+                return 1;
+            default:
+                return 0;                
         }
     }
 
