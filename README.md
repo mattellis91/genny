@@ -1,2 +1,2 @@
-# gen-lang
+# genny
 simple scripting language for creating generative art
