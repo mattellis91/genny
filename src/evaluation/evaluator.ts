@@ -55,8 +55,6 @@ export class Evaluator implements IEvaluator {
                     return (left as boolean) && (right as boolean);
                 case BoundBinaryOperatorType.LogicalOr:
                     return (left as boolean) || (right as boolean);
-                case BoundBinaryOperatorType.LogicalOr:
-                    return (left as boolean) || (right as boolean);
                 case BoundBinaryOperatorType.Equals:
                     return left === right;
                 case BoundBinaryOperatorType.NotEquals:
