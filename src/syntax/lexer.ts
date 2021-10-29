@@ -68,13 +68,14 @@ export class Lexer implements ILexer{
             return new SyntaxToken(SyntaxType.EOFToken, this._position, "\0", null);
         }
 
+        let start = this._position;
+
         //get number token
         if(this.charIsNumber(this.getCurrentChar().charCodeAt(0))) {
-            const start = this._position;
             while(this.charIsNumber(this.getCurrentChar().charCodeAt(0))) {
                 this.next();
             }
-            
+
             const length = this._position - start;
             const text = this._text.substring(start, start + length);
             const value = Number.parseInt(text);
@@ -86,19 +87,19 @@ export class Lexer implements ILexer{
 
         //get white space token
         if (this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
-            const start = this._position;
+
             while(this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
                 this.next();
             }
             const length = this._position - start;
-            
+
             const text = this._text.substring(start, start + length);
             return new SyntaxToken(SyntaxType.WhitespaceToken, start, text, null);
         }
 
         //get keyword token
         if(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))) {
-            const start = this._position;
+
             while(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))){
                 this.next();
             }
@@ -125,24 +126,29 @@ export class Lexer implements ILexer{
                 return new SyntaxToken(SyntaxType.ModToken, this._position++, "%", null);
             case '&':
                 if(this.lookAhead() === '&') {
-                    return new SyntaxToken(SyntaxType.AmpersandAmpersandToken, this._position+=2, '&&', null);
+                    this._position += 2;
+                    return new SyntaxToken(SyntaxType.AmpersandAmpersandToken, start, '&&', null);
                 }
                 break;
             case '|':
                 if(this.lookAhead() === '|') {
-                    return new SyntaxToken(SyntaxType.PipePipeToken, this._position+=2, '||', null);
+                    this._position += 2;
+                    return new SyntaxToken(SyntaxType.PipePipeToken, start, '||', null);
                 }
                 break;
             case '=':
                 if(this.lookAhead() === '=') {
-                    return new SyntaxToken(SyntaxType.EqualsEqualsToken, this._position+=2, '==', null);
+                    this._position += 2;
+                    return new SyntaxToken(SyntaxType.EqualsEqualsToken, start, '==', null);
                 }
                 break;
             case '!':
                 if(this.lookAhead() === '=') {
-                    return new SyntaxToken(SyntaxType.BangEqualsToken, this._position+=2, '!=', null);
+                    this._position += 2;
+                    return new SyntaxToken(SyntaxType.BangEqualsToken, start, '!=', null);
                 }
-                return new SyntaxToken(SyntaxType.BangToken, this._position++, '!', null);
+                this._position += 1;
+                return new SyntaxToken(SyntaxType.BangToken, start, '!', null);
         }
 
         //unknown token

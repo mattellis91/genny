@@ -24,18 +24,19 @@ export class Repl implements IRepl{
             }
 
             const syntaxTree = SyntaxTree.parse(input);
-            
+
             const compilation = new Compilation(syntaxTree);
-            const result = compilation.evaluate(); 
-            const diagnostics = result.diagnostics; 
-            
+            const result = compilation.evaluate();
+            const diagnostics = result.diagnostics;
+
             if(showTree) {
                 Util.prettyPrint(syntaxTree.root);
             }
 
             if(diagnostics.length) {
+              console.log(diagnostics);
                 for(const diagnostic of diagnostics) {
-                    Util.logErrorMessage(diagnostic.message);
+                    Util.logErrorMessage(input, diagnostic);
                 }
             } else {
                 console.log(result.value);
