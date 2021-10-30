@@ -7,12 +7,12 @@ import { EvaluationResult } from "./evaluationResult";
 export class Compilation implements ICompilation {
     public syntaxTree:SyntaxTree;
 
-    constructor(syntaxTree:SyntaxTree) {
+    constructor(syntaxTree:SyntaxTree, variables:Record<string, object>) {
         this.syntaxTree = syntaxTree;
     }
 
-    public evaluate(): EvaluationResult {
-        const binder = new Binder();
+    public evaluate(variables: Record<string, object>): EvaluationResult {
+        const binder = new Binder(variables);
         const boundExpression = binder.bindExpression(this.syntaxTree.root);
 
         const diagnostics = [
@@ -24,7 +24,7 @@ export class Compilation implements ICompilation {
             return new EvaluationResult(diagnostics, null);
         }
 
-        const evaluator = new Evaluator(boundExpression);
+        const evaluator = new Evaluator(boundExpression, variables);
         const value = evaluator.evaluate();
 
         return new EvaluationResult([],value);

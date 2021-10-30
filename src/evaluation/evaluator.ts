@@ -7,8 +7,11 @@ import { IEvaluator } from "../interfaces/evaluation-interfaces/i-evaluator";
 
 export class Evaluator implements IEvaluator {
     private readonly _root:BoundExpression;
-    constructor(root: BoundExpression) {      
+    private readonly _variables:Record<string, object>;
+    
+    constructor(root: BoundExpression, variables: Record<string, object>) {      
         this._root = root;
+        this._variables = variables;
     }
 
     public evaluate():any {

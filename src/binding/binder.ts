@@ -1,3 +1,4 @@
+import { BoundVariableExpression } from ".";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IBinder } from "../interfaces/binding-interfaces/i-binder";
 import { BinaryExpressionSyntax, 
@@ -19,6 +20,11 @@ import { BoundUnaryOperator } from "./boundUnaryOperator";
 export class Binder implements IBinder {
 
     public diagnosticBag:DiagnosticBag = new DiagnosticBag();
+    private readonly _variables: Record<string, object>;
+
+    constructor(variables:Record<string, object>) {
+        this._variables = variables;
+    }
 
     public bindExpression(syntax:ExpressionSyntax) : BoundExpression {
         switch(syntax.type) {
@@ -70,10 +76,17 @@ export class Binder implements IBinder {
     }
 
     private bindNameExpression(syntax:NameExpressionSyntax) : BoundExpression {
-        return this.bindExpression(syntax);
+        const name = syntax.identifierToken.text as string;
+        if(this._variables[name] == undefined) {
+            this.diagnosticBag.reportUndefinedNameExpression(syntax.identifierToken.span, name);
+            return new BoundLiteralExpression(0);
+        }
+        const type = typeof(this._variables[name]);
+        return new BoundVariableExpression(name, type);
     }
 
     private bindAssignmentExpression(syntax:AssignmentExpressionSyntax) : BoundExpression {
+        //TODO: implement this
         return this.bindExpression(syntax);
     }
 } 

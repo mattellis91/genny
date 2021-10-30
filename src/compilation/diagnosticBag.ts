@@ -35,6 +35,11 @@ export class DiagnosticBag implements IDiagnosticBag {
         this.report(span,message);
     }
 
+    public reportUndefinedNameExpression(span:TextSpan, name:string):void{
+        const message = "ERROR: Variable '" + name + "' does not exist";
+        this.report(span,message);
+    }
+
     public addRange(diagnosticBag:DiagnosticBag):void {
         this.diagnostics = [
             ...this.diagnostics,

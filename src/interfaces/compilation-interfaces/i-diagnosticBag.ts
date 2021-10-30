@@ -9,4 +9,5 @@ export interface IDiagnosticBag {
     reportUnexpectedToken(span:TextSpan, recievedType:SyntaxType, expectedType:SyntaxType):void;
     reportUndefinedBinaryExpression(span:TextSpan, operatorText:string, leftType:string, rightType:string):void;
     reportUndefinedUnaryOperator(span:TextSpan, operatorText:string, operandType:string):void;
+    reportUndefinedNameExpression(span:TextSpan, name:string):void;
 }

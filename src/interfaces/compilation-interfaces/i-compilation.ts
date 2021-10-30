@@ -3,5 +3,5 @@ import { SyntaxTree } from "../../syntax";
 
 export interface ICompilation { 
     syntaxTree:SyntaxTree;
-    evaluate(): EvaluationResult;
+    evaluate(variables: Record<string, object>): EvaluationResult;
 }
