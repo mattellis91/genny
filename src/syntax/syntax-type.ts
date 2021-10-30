@@ -19,6 +19,7 @@ export enum SyntaxType {
     PipePipeToken = "PipePipeToken",
     EqualsEqualsToken = "EqualsEqualsToken",
     BangEqualsToken = "BangEqualsToken",
+    EqualsToken = "EqualsToken",
 
     //Expressions
     NumberExpression = "NumberExpression",
@@ -27,7 +28,7 @@ export enum SyntaxType {
     LiteralExpression = "LiteralExpression",
     UnaryExpression = "UnaryExpression",
     NameExpression = "NameExpression",
-    AssignmentToken = "AssignmentToken",
+    AssignmentExpression = "AssignmentExpression",
 
     //Keywords
     TrueKeyword = "TrueKeyword",

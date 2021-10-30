@@ -1,12 +1,12 @@
 import { ExpressionSyntax, SyntaxNode, SyntaxToken, SyntaxType } from ".";
 import { IAssignmentExpressionSyntax } from "../interfaces/syntax-interfaces/i-assignmentExpressionSyntax";
 
-export class assignmentExpressionSyntax extends ExpressionSyntax implements IAssignmentExpressionSyntax {
+export class AssignmentExpressionSyntax extends ExpressionSyntax implements IAssignmentExpressionSyntax {
 
   public identifierToken:SyntaxToken;
   public equalsToken:SyntaxToken;
   public expression:ExpressionSyntax;
-  public type = SyntaxType.AssignmentToken;
+  public type = SyntaxType.AssignmentExpression;
 
   constructor(identifierToken:SyntaxToken, equalsToken:SyntaxToken, expression: ExpressionSyntax) {
     super();

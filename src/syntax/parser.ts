@@ -1,4 +1,5 @@
 
+import { AssignmentExpressionSyntax, NameExpressionSyntax } from ".";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IParser } from "../interfaces/syntax-interfaces/i-parser";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
@@ -57,7 +58,7 @@ export class Parser implements IParser {
         switch(this.getCurrent().type) {
             case SyntaxType.OpenParenthesisToken:
                 const left = this.nextToken();
-                const expression = this.parseExpression();
+                const expression = this.parseBinaryExpression();
                 const right = this.match(SyntaxType.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left,expression,right);
 
@@ -66,6 +67,10 @@ export class Parser implements IParser {
                 const keywordToken = this.nextToken();
                 const value = keywordToken.type === SyntaxType.TrueKeyword;
                 return new LiteralExpressionSyntax(keywordToken, value);
+
+            case SyntaxType.IndetifierToken:
+                const identifierToken = this.nextToken();
+                return new NameExpressionSyntax(identifierToken);
 
             default:
                 const numberToken = this.match(SyntaxType.NumberToken);
@@ -85,13 +90,13 @@ export class Parser implements IParser {
     }
 
 
-    private parseExpression(parentPrecedence:number = 0): ExpressionSyntax {
+    private parseBinaryExpression(parentPrecedence:number = 0): ExpressionSyntax {
 
         let left:ExpressionSyntax;
         const unaryOperatorPrecedence = SyntaxHelper.getUnaryOperatorPrecedence(this.getCurrent().type);
         if(unaryOperatorPrecedence !== 0 && unaryOperatorPrecedence >= parentPrecedence) {
             const operatorToken = this.nextToken();
-            const operand = this.parseExpression(unaryOperatorPrecedence);
+            const operand = this.parseBinaryExpression(unaryOperatorPrecedence);
             left = new UnaryExpressionSyntax(operatorToken,operand);
         } else {
             left = this.parsePrimaryExpression();
@@ -104,15 +109,34 @@ export class Parser implements IParser {
             }
 
             const operatorToken = this.nextToken();
-            const right = this.parseExpression(precedence);
+            const right = this.parseBinaryExpression(precedence);
             left = new BinaryExpressionSyntax(left, operatorToken, right);
         }
 
         return left;
     }
 
+    private parseAssignmentExpression() : ExpressionSyntax {
+
+        if(this.peek(0).type === SyntaxType.IndetifierToken &&
+           this.peek(1).type === SyntaxType.EqualsToken 
+        ) {
+            const identifierToken = this.nextToken();
+            const operatorToken = this.nextToken();
+            const right = this.parseAssignmentExpression();
+            return new AssignmentExpressionSyntax(identifierToken, operatorToken, right);
+        }
+
+        return this.parseBinaryExpression();
+
+    }
+
+    private parseExpression() : ExpressionSyntax {
+        return this.parseAssignmentExpression();
+    }
+
     public parse(): SyntaxTree {
-        const expression = this.parseExpression();
+        const expression = this.parseBinaryExpression();
         const eof = this.match(SyntaxType.EOFToken);
         return new SyntaxTree(expression, eof, this.diagnosticBag.diagnostics);
     }

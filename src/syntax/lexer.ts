@@ -141,6 +141,8 @@ export class Lexer implements ILexer{
                     this._position += 2;
                     return new SyntaxToken(SyntaxType.EqualsEqualsToken, start, '==', null);
                 }
+                this._position += 1;
+                return new SyntaxToken(SyntaxType.EqualsToken, start, '=', null);
                 break;
             case '!':
                 if(this.lookAhead() === '=') {

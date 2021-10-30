@@ -1,6 +1,14 @@
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IBinder } from "../interfaces/binding-interfaces/i-binder";
-import { BinaryExpressionSyntax, ExpressionSyntax, LiteralExpressionSyntax, SyntaxType, UnaryExpressionSyntax } from "../syntax";
+import { BinaryExpressionSyntax, 
+        ExpressionSyntax, 
+        LiteralExpressionSyntax, 
+        SyntaxType, 
+        UnaryExpressionSyntax, 
+        ParenthesizedExpressionSyntax,
+        NameExpressionSyntax,
+        AssignmentExpressionSyntax
+    } from "../syntax";
 import { BoundBinaryExpression } from "./boundBinaryExpression";
 import { BoundBinaryOperator } from "./boundBinaryOperator";
 import { BoundExpression } from "./boundExpression";
@@ -20,6 +28,12 @@ export class Binder implements IBinder {
                 return this.bindUnaryExpression(syntax as UnaryExpressionSyntax);
             case SyntaxType.LiteralExpression:
                 return this.bindLiteralExpression(syntax as LiteralExpressionSyntax);
+            case SyntaxType.ParenthesizedExpression:
+                return this.bindParenthesizedExpression((syntax as ParenthesizedExpressionSyntax));
+            case SyntaxType.NameExpression:
+                return this.bindNameExpression(syntax as NameExpressionSyntax);
+            case SyntaxType.AssignmentExpression:
+                return this.bindAssignmentExpression(syntax as AssignmentExpressionSyntax);
             default:
                 throw new Error("ERROR: Unexpected syntax: " + syntax.type);
         }
@@ -49,5 +63,17 @@ export class Binder implements IBinder {
     private bindLiteralExpression(syntax:LiteralExpressionSyntax) : BoundExpression{
         const value = syntax.value !== null ? syntax.value : syntax.literalToken.value ?? 0;   
         return new BoundLiteralExpression(value);     
-     }
+    }
+
+    private bindParenthesizedExpression(syntax:ParenthesizedExpressionSyntax) : BoundExpression {
+        return this.bindExpression(syntax.expression);
+    }
+
+    private bindNameExpression(syntax:NameExpressionSyntax) : BoundExpression {
+        return this.bindExpression(syntax);
+    }
+
+    private bindAssignmentExpression(syntax:AssignmentExpressionSyntax) : BoundExpression {
+        return this.bindExpression(syntax);
+    }
 } 
