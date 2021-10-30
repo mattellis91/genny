@@ -26,6 +26,8 @@ export enum SyntaxType {
     ParenthesizedExpression = "ParenthesizedExpression",
     LiteralExpression = "LiteralExpression",
     UnaryExpression = "UnaryExpression",
+    NameExpression = "NameExpression",
+    AssignmentToken = "AssignmentToken",
 
     //Keywords
     TrueKeyword = "TrueKeyword",

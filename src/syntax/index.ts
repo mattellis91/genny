@@ -10,3 +10,5 @@ export * from './binaryExpressionSyntax';
 export * from './syntaxTree';
 export * from './syntaxHelper';
 export * from './unaryExpressionSyntax';
+export * from './nameExpressionSyntax';
+export * from './assignmentExpressionSyntax';

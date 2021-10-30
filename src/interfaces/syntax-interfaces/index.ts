@@ -8,3 +8,5 @@ export * from './i-binaryExpressionSyntax';
 export * from './i-syntax-tree';
 export * from './i-parenthesizedExpressionSyntax';
 export * from './i-unaryExpressionSyntax';
+export * from './i-nameExpressionSyntax';
+export * from './i-assignmentExpressionSyntax';

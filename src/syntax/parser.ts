@@ -1,5 +1,4 @@
 
-import { Diagnostic } from "../compilation/diagnostic";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IParser } from "../interfaces/syntax-interfaces/i-parser";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
@@ -52,12 +51,12 @@ export class Parser implements IParser {
         return current;
     }
 
-    
+
     private parsePrimaryExpression(): ExpressionSyntax{
 
         switch(this.getCurrent().type) {
             case SyntaxType.OpenParenthesisToken:
-                const left = this.nextToken(); 
+                const left = this.nextToken();
                 const expression = this.parseExpression();
                 const right = this.match(SyntaxType.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left,expression,right);
@@ -70,7 +69,7 @@ export class Parser implements IParser {
 
             default:
                 const numberToken = this.match(SyntaxType.NumberToken);
-                return new LiteralExpressionSyntax(numberToken) 
+                return new LiteralExpressionSyntax(numberToken)
 
         }
     }
@@ -117,4 +116,4 @@ export class Parser implements IParser {
         const eof = this.match(SyntaxType.EOFToken);
         return new SyntaxTree(expression, eof, this.diagnosticBag.diagnostics);
     }
-}    
+}
