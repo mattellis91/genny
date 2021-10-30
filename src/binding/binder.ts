@@ -1,4 +1,4 @@
-import { BoundVariableExpression } from ".";
+import { BoundAssignmentExpression, BoundVariableExpression } from ".";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IBinder } from "../interfaces/binding-interfaces/i-binder";
 import { BinaryExpressionSyntax, 
@@ -81,12 +81,14 @@ export class Binder implements IBinder {
             this.diagnosticBag.reportUndefinedNameExpression(syntax.identifierToken.span, name);
             return new BoundLiteralExpression(0);
         }
-        const type = typeof(this._variables[name]);
+        const type = typeof(1); //assume number variable
         return new BoundVariableExpression(name, type);
     }
 
     private bindAssignmentExpression(syntax:AssignmentExpressionSyntax) : BoundExpression {
         //TODO: implement this
-        return this.bindExpression(syntax);
+        const name = syntax.identifierToken;
+        const boundExpression = this.bindExpression(syntax.expression);
+        return new BoundAssignmentExpression(name.text as string, boundExpression);
     }
 } 

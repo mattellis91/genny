@@ -136,7 +136,7 @@ export class Parser implements IParser {
     }
 
     public parse(): SyntaxTree {
-        const expression = this.parseBinaryExpression();
+        const expression = this.parseExpression();
         const eof = this.match(SyntaxType.EOFToken);
         return new SyntaxTree(expression, eof, this.diagnosticBag.diagnostics);
     }

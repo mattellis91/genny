@@ -9,6 +9,8 @@ export class Repl implements IRepl{
 
     main():void {
         let showTree = false;
+        const variables = {} as Record<string, object>;
+
         while(true) {
             const input = readlineSync.question(">:");
             if(input === 'q') return;
@@ -25,8 +27,8 @@ export class Repl implements IRepl{
 
             const syntaxTree = SyntaxTree.parse(input);
 
-            const compilation = new Compilation(syntaxTree);
-            const result = compilation.evaluate();
+            const compilation = new Compilation(syntaxTree, variables);
+            const result = compilation.evaluate(variables);
             const diagnostics = result.diagnostics;
 
             if(showTree) {

@@ -143,7 +143,6 @@ export class Lexer implements ILexer{
                 }
                 this._position += 1;
                 return new SyntaxToken(SyntaxType.EqualsToken, start, '=', null);
-                break;
             case '!':
                 if(this.lookAhead() === '=') {
                     this._position += 2;

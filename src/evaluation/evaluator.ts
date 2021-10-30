@@ -1,4 +1,4 @@
-import { BoundExpression, BoundUnaryExpression } from "../binding";
+import { BoundExpression, BoundUnaryExpression, BoundVariableExpression, BoundAssignmentExpression } from "../binding";
 import { BoundBinaryExpression } from "../binding/boundBinaryExpression";
 import { BoundBinaryOperatorType } from "../binding/boundBinaryOperatorType";
 import { BoundLiteralExpression } from "../binding/boundLiteralExpression";
@@ -22,6 +22,16 @@ export class Evaluator implements IEvaluator {
 
         if(node instanceof BoundLiteralExpression) {
             return node.value;
+        }
+
+        if(node instanceof BoundVariableExpression) {
+            return this._variables[node.name];
+        }
+
+        if(node instanceof BoundAssignmentExpression) {
+            const value = this.evaluateExpression(node.expression);
+            this._variables[node.name] = value;
+            return value;
         }
 
         if(node instanceof BoundUnaryExpression) {
