@@ -36,7 +36,6 @@ export class Repl implements IRepl{
             }
 
             if(diagnostics.length) {
-              console.log(diagnostics);
                 for(const diagnostic of diagnostics) {
                     Util.logErrorMessage(input, diagnostic);
                 }

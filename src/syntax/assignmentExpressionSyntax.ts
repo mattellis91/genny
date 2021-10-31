@@ -19,7 +19,7 @@ export class AssignmentExpressionSyntax extends ExpressionSyntax implements IAss
     return [
         this.identifierToken,
         this.equalsToken,
-        this.identifierToken
+        this.expression
     ];
 }
 

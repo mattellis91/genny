@@ -81,14 +81,27 @@ export class Binder implements IBinder {
             this.diagnosticBag.reportUndefinedNameExpression(syntax.identifierToken.span, name);
             return new BoundLiteralExpression(0);
         }
-        const type = typeof(1); //assume number variable
+        const type = typeof(this._variables[name]);
         return new BoundVariableExpression(name, type);
     }
 
     private bindAssignmentExpression(syntax:AssignmentExpressionSyntax) : BoundExpression {
-        //TODO: implement this
-        const name = syntax.identifierToken;
+        const name = syntax.identifierToken.text as string;
         const boundExpression = this.bindExpression(syntax.expression);
-        return new BoundAssignmentExpression(name.text as string, boundExpression);
+
+        const defaultValue = 
+            boundExpression.type === typeof(1) ? 0 
+                : boundExpression.type === typeof(true) ? false
+                    : null;
+
+        if(defaultValue === null) {
+            throw new Error("ERROR: Unsupported variable type: '" + boundExpression.type + "'");
+        }
+        
+        this._variables[name] = defaultValue as unknown as object;
+
+        console.log(this._variables);
+
+        return new BoundAssignmentExpression(name, boundExpression);
     }
 } 
