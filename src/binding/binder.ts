@@ -100,7 +100,6 @@ export class Binder implements IBinder {
         
         this._variables[name] = defaultValue as unknown as object;
 
-        console.log(this._variables);
 
         return new BoundAssignmentExpression(name, boundExpression);
     }
