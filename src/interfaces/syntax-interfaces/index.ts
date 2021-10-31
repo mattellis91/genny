@@ -10,3 +10,4 @@ export * from './i-parenthesizedExpressionSyntax';
 export * from './i-unaryExpressionSyntax';
 export * from './i-nameExpressionSyntax';
 export * from './i-assignmentExpressionSyntax';
+export * from './i-syntaxNode';
