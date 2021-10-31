@@ -1,15 +1,16 @@
 import { BoundExpression, BoundNodeType } from ".";
 import { IBoundAssignmentExpression } from "..";
+import { VariableSymbol } from "../compilation/variableSymbol";
 
 export class BoundAssignmentExpression extends BoundExpression implements IBoundAssignmentExpression {
-    public name:string;
     public type:string;
+    public variable:VariableSymbol;
     public expression:BoundExpression;
     public boundNodeType:BoundNodeType = BoundNodeType.AssignmentExpression;
 
-    constructor(name:string, expression:BoundExpression) {
+    constructor(variable:VariableSymbol, expression:BoundExpression) {
         super();
-        this.name = name;
+        this.variable = variable;
         this.type = expression.type;
         this.expression = expression;
     }

@@ -1,5 +1,6 @@
 import { BoundAssignmentExpression, BoundVariableExpression } from ".";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
+import { VariableSymbol } from "../compilation/variableSymbol";
 import { IBinder } from "../interfaces/binding-interfaces/i-binder";
 import { BinaryExpressionSyntax, 
         ExpressionSyntax, 
@@ -20,9 +21,9 @@ import { BoundUnaryOperator } from "./boundUnaryOperator";
 export class Binder implements IBinder {
 
     public diagnosticBag:DiagnosticBag = new DiagnosticBag();
-    private readonly _variables: Record<string, object>;
+    private readonly _variables: Map<VariableSymbol, object>;
 
-    constructor(variables:Record<string, object>) {
+    constructor(variables:Map<VariableSymbol,object>) {
         this._variables = variables;
     }
 
@@ -77,30 +78,43 @@ export class Binder implements IBinder {
 
     private bindNameExpression(syntax:NameExpressionSyntax) : BoundExpression {
         const name = syntax.identifierToken.text as string;
-        if(this._variables[name] == undefined) {
+        let variable = undefined;
+
+        for(let [vSymbol, value] of this._variables) {
+            if(vSymbol.name === name) {
+                variable = vSymbol;
+                break;
+            }
+        }
+
+        if(variable === undefined) {
             this.diagnosticBag.reportUndefinedNameExpression(syntax.identifierToken.span, name);
             return new BoundLiteralExpression(0);
         }
-        const type = typeof(this._variables[name]);
-        return new BoundVariableExpression(name, type);
+
+        return new BoundVariableExpression(variable);
     }
 
     private bindAssignmentExpression(syntax:AssignmentExpressionSyntax) : BoundExpression {
         const name = syntax.identifierToken.text as string;
         const boundExpression = this.bindExpression(syntax.expression);
 
-        const defaultValue = 
-            boundExpression.type === typeof(1) ? 0 
-                : boundExpression.type === typeof(true) ? false
-                    : null;
+        let existingVariable = undefined;
 
-        if(defaultValue === null) {
-            throw new Error("ERROR: Unsupported variable type: '" + boundExpression.type + "'");
+        for(let [vSymbol, value] of this._variables) {
+            if(vSymbol.name === name) {
+                existingVariable = vSymbol;
+                break;
+            }
         }
-        
-        this._variables[name] = defaultValue as unknown as object;
 
+        if(existingVariable !== undefined) {
+            this._variables.delete(existingVariable);
+        }
 
-        return new BoundAssignmentExpression(name, boundExpression);
+        const variable = new VariableSymbol(name, boundExpression.type);
+        this._variables.set(variable, null as unknown as object);
+
+        return new BoundAssignmentExpression(variable, boundExpression);
     }
 } 

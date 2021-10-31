@@ -3,13 +3,14 @@ import { BoundBinaryExpression } from "../binding/boundBinaryExpression";
 import { BoundBinaryOperatorType } from "../binding/boundBinaryOperatorType";
 import { BoundLiteralExpression } from "../binding/boundLiteralExpression";
 import { BoundUnaryOperatorType } from "../binding/boundUnaryOperatorType";
+import { VariableSymbol } from "../compilation/variableSymbol";
 import { IEvaluator } from "../interfaces/evaluation-interfaces/i-evaluator";
 
 export class Evaluator implements IEvaluator {
     private readonly _root:BoundExpression;
-    private readonly _variables:Record<string, object>;
+    private readonly _variables:Map<VariableSymbol, object>;
     
-    constructor(root: BoundExpression, variables: Record<string, object>) {      
+    constructor(root: BoundExpression, variables: Map<VariableSymbol, object>) {      
         this._root = root;
         this._variables = variables;
     }
@@ -25,12 +26,12 @@ export class Evaluator implements IEvaluator {
         }
 
         if(node instanceof BoundVariableExpression) {
-            return this._variables[node.name];
+            return this._variables.get(node.variable);
         }
 
         if(node instanceof BoundAssignmentExpression) {
             const value = this.evaluateExpression(node.expression);
-            this._variables[node.name] = value;
+            this._variables.set(node.variable, value);
             return value;
         }
 

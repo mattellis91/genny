@@ -3,13 +3,14 @@ import * as readlineSync from "readline-sync";
 import { Util } from "../util/util";
 import { SyntaxTree } from "../syntax/syntaxTree";
 import { Compilation } from "../compilation/compilation";
+import { VariableSymbol } from "../compilation/variableSymbol";
 
 export class Repl implements IRepl{
     constructor() {}
 
     main():void {
         let showTree = false;
-        const variables = {} as Record<string, object>;
+        const variables = new Map<VariableSymbol, object>();
 
         while(true) {
             const input = readlineSync.question(">:");

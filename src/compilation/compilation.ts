@@ -3,15 +3,17 @@ import { Evaluator } from "../evaluation";
 import { ICompilation } from "../interfaces/compilation-interfaces/i-compilation";
 import { SyntaxTree } from "../syntax";
 import { EvaluationResult } from "./evaluationResult";
+import { VariableSymbol } from "./variableSymbol";
 
 export class Compilation implements ICompilation {
     public syntaxTree:SyntaxTree;
 
-    constructor(syntaxTree:SyntaxTree, variables:Record<string, object>) {
+    //TODO: use Map instead of record for varaibles inorder to use variable symbol as key
+    constructor(syntaxTree:SyntaxTree, variables:Map<VariableSymbol, object>) {
         this.syntaxTree = syntaxTree;
     }
 
-    public evaluate(variables: Record<string, object>): EvaluationResult {
+    public evaluate(variables: Map<VariableSymbol, object>): EvaluationResult {
         const binder = new Binder(variables);
         const boundExpression = binder.bindExpression(this.syntaxTree.root);
 
