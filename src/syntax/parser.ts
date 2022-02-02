@@ -140,4 +140,19 @@ export class Parser implements IParser {
         const eof = this.match(SyntaxType.EOFToken);
         return new SyntaxTree(expression, eof, this.diagnosticBag.diagnostics);
     }
+
+    //gets the final list of tokens that the lexer produces for the parsing step. 
+    //only use in unit test to test lexing where there are multiple tokens in the input text
+    public getTokenListForTests(text:string) {
+        const tokens:SyntaxToken[] =  [];
+        const lexer = new Lexer(text);
+        let token:SyntaxToken;
+        do {
+            token = lexer.lex();
+            if(token.type !== SyntaxType.WhitespaceToken && token.type !== SyntaxType.UnknownToken) {
+                tokens.push(token);
+            }
+        } while(token.type !== SyntaxType.EOFToken);
+        return tokens;
+    }
 }
