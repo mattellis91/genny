@@ -40,6 +40,8 @@ export class Lexer implements ILexer{
         return (
             charCode == 9 ||
             charCode == 11 ||
+            charCode == 10 ||
+            charCode == 13 ||
             charCode == 12 ||
             charCode == 32 ||
             charCode == 160
