@@ -13,7 +13,7 @@ export enum SyntaxType {
     ModToken = "ModToken",
     UnknownToken = "UnknownToken",
     EOFToken = "EOFToken",
-    IndetifierToken = "IndetifierToken",
+    IdentifierToken = "IdentifierToken",
     BangToken = "BangToken",
     AmpersandAmpersandToken = "AmpersandAmpersandToken",
     PipePipeToken = "PipePipeToken",

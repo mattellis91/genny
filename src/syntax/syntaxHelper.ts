@@ -41,7 +41,7 @@ export class SyntaxHelper {
             case "false":
                 return SyntaxType.FalseKeyword;
             default:
-                return SyntaxType.IndetifierToken;
+                return SyntaxType.IdentifierToken;
         }
     }
 

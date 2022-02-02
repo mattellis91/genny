@@ -68,7 +68,7 @@ export class Parser implements IParser {
                 const value = keywordToken.type === SyntaxType.TrueKeyword;
                 return new LiteralExpressionSyntax(keywordToken, value);
 
-            case SyntaxType.IndetifierToken:
+            case SyntaxType.IdentifierToken:
                 const identifierToken = this.nextToken();
                 return new NameExpressionSyntax(identifierToken);
 
@@ -118,7 +118,7 @@ export class Parser implements IParser {
 
     private parseAssignmentExpression() : ExpressionSyntax {
 
-        if(this.peek(0).type === SyntaxType.IndetifierToken &&
+        if(this.peek(0).type === SyntaxType.IdentifierToken &&
            this.peek(1).type === SyntaxType.EqualsToken 
         ) {
             const identifierToken = this.nextToken();
