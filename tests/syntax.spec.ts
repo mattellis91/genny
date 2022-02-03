@@ -36,19 +36,7 @@ describe('Syntax Tests', () => {
         {type: SyntaxType.WhitespaceToken, value: '\r\n'},
     ];
 
-    const getTokenPairs = () => {
-        const tokenPairs = [];
-        for(const t1 of tokensToCheck) {
-            for(const t2 of tokensToCheck) {
-                if(!requiresSeparator(t1, t2)) {
-                    tokenPairs.push({t1Type: t1.type, t1Value: t1.value, t2Type: t2.type, t2Value: t2.value});
-                }
-            
-            }
-        }
-        return tokenPairs;
-    }
-
+    
     const requiresSeparator = (t1:Token, t2:Token) => {
         const t1IsKeyword = t1.type.endsWith('Keyword');
         const t2IsKeyword = t2.type.endsWith('Keyword');
@@ -66,17 +54,73 @@ describe('Syntax Tests', () => {
         return false;
     }
 
-    it('Should correctly identify syntax types', () => {
-        for(const item of [...tokensToCheck, ...separators]) {
+
+    const getTokenPairs = () => {
+        const tokenPairs = [];
+        for(const t1 of tokensToCheck) {
+            for(const t2 of tokensToCheck) {
+                if(!requiresSeparator(t1, t2)) {
+                    tokenPairs.push({t1Type: t1.type, t1Value: t1.value, t2Type: t2.type, t2Value: t2.value});
+                }
+            
+            }
+        }
+        return tokenPairs;
+    }
+
+    const getTokenPairsWithSeparator = () => {
+        const tokenPairs = [];
+        for(const t1 of tokensToCheck) {
+            for(const t2 of tokensToCheck) {
+                if(requiresSeparator(t1, t2)) {
+                    for(const sep of separators){
+                        tokenPairs.push({
+                            t1Type: t1.type, 
+                            t1Value: t1.value, 
+                            sepType: sep.type,
+                            sepValue: sep.value,
+                            t2Type: t2.type, 
+                            t2Value: t2.value
+                        });
+                    }
+                }
+            
+            }
+        }
+        return tokenPairs;
+    }
+
+    const singleTokens = [...tokensToCheck, ...separators];
+    const singleTokensLength = singleTokens.length;
+
+    const tokenPairs = getTokenPairs();
+    const tokenPairsLength = tokenPairs.length;
+
+    const tokenSepPairs = getTokenPairsWithSeparator();
+    const tokenSepPairsLength = tokenSepPairs.length;
+
+    it(`Should correctly identify syntax types (${singleTokensLength} tests)`, () => {
+        for(const item of singleTokens) {
             const lexer = new Lexer(item.value);
             const token = lexer.lex();
             expect(token.type).to.equal(item.type);
         }
     });
 
-    it('Should correctly parse token pairs', () => {
-        for(const tokenPair of getTokenPairs()) {
+    it(`Should correctly parse token pairs (${tokenPairsLength} tests)`, () => {
+        for(const tokenPair of tokenPairs) {
             const pairText = tokenPair.t1Value + tokenPair.t2Value;
+            const parserTokens = new Parser(pairText).getTokenListForTests(pairText);
+            expect(parserTokens.length).to.equal(3);
+            expect(parserTokens[2].type).to.equal(SyntaxType.EOFToken);
+            expect(parserTokens[0].type).to.equal(tokenPair.t1Type);
+            expect(parserTokens[1].type).to.equal(tokenPair.t2Type);
+        }
+    });
+
+    it(`Should correctly parse token pairs with separators (${tokenSepPairsLength} tests)`, () => {
+        for(const tokenPair of tokenSepPairs) {
+            const pairText = tokenPair.t1Value + tokenPair.sepValue + tokenPair.t2Value;
             const parserTokens = new Parser(pairText).getTokenListForTests(pairText);
             expect(parserTokens.length).to.equal(3);
             expect(parserTokens[2].type).to.equal(SyntaxType.EOFToken);
