@@ -23,15 +23,17 @@ describe('Syntax Tests', () => {
         {type: SyntaxType.CloseParenthesisToken, value: ')'},
         {type: SyntaxType.FalseKeyword, value: 'false'},
         {type: SyntaxType.TrueKeyword, value: 'true'},
-        // {type: SyntaxType.WhitespaceToken, value: ' '},
-        // {type: SyntaxType.WhitespaceToken, value: '  '},
-        // {type: SyntaxType.WhitespaceToken, value: '\r'},
-        // {type: SyntaxType.WhitespaceToken, value: '\n'},
-        // {type: SyntaxType.WhitespaceToken, value: '\r\n'},
-        {type: SyntaxType.NumberToken, value: '1'},
         {type: SyntaxType.NumberToken, value: '123'},
         {type: SyntaxType.IdentifierToken, value: 'a'},
         {type: SyntaxType.IdentifierToken, value: 'abc'}
+    ];
+
+    const separators:Token[] = [
+        {type: SyntaxType.WhitespaceToken, value: ' '},
+        {type: SyntaxType.WhitespaceToken, value: '  '},
+        {type: SyntaxType.WhitespaceToken, value: '\r'},
+        {type: SyntaxType.WhitespaceToken, value: '\n'},
+        {type: SyntaxType.WhitespaceToken, value: '\r\n'},
     ];
 
     const getTokenPairs = () => {
@@ -65,7 +67,7 @@ describe('Syntax Tests', () => {
     }
 
     it('Should correctly identify syntax types', () => {
-        for(const item of tokensToCheck) {
+        for(const item of [...tokensToCheck, ...separators]) {
             const lexer = new Lexer(item.value);
             const token = lexer.lex();
             expect(token.type).to.equal(item.type);
