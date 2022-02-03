@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import {Lexer, Parser, SyntaxTree, SyntaxType} from '../src';
 
-describe('Syntax Tests', () => {
+describe('Lexer Tests', () => {
 
     interface Token {
         type:SyntaxType,
