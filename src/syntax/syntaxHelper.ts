@@ -61,4 +61,65 @@ export class SyntaxHelper {
                 return type;
         }
     }
+
+    public static getSyntaxTypes(): SyntaxType[] {
+        return Object.keys(SyntaxType).filter((item) => {
+            return isNaN(Number(item));
+        }) as SyntaxType[];
+    }
+
+    public static getBinaryOperatorTypes(): SyntaxType[] {
+        const binaryOperators = [];
+        for(const type of this.getSyntaxTypes()) {
+            if(this.getBinaryOperatorPrecedence(type) > 0) {
+                binaryOperators.push(type as SyntaxType);
+            }
+        }
+        return binaryOperators;
+    }
+
+    public static getUnaryOperatorTypes(): SyntaxType[] {
+        const unaryOperators = [];
+        for(const type of this.getSyntaxTypes()) {
+            if(this.getUnaryOperatorPrecedence(type) > 0) {
+                unaryOperators.push(type as SyntaxType);
+            }
+        }
+        return unaryOperators;
+    }
+ 
+    public static getTextForFixedTokens(type: SyntaxType): string {
+        switch(type) {
+         case SyntaxType.PlusToken:
+             return '+';
+        case SyntaxType.MinusToken:
+            return '-';
+        case SyntaxType.StarToken:
+            return '*';
+        case SyntaxType.SlashToken:
+            return '/';
+        case SyntaxType.BangToken:
+            return '!';
+        case SyntaxType.EqualsToken:
+            return '=';
+        case SyntaxType.AmpersandAmpersandToken:
+            return '&&';
+        case SyntaxType.PipePipeToken:
+            return '||';
+        case SyntaxType.EqualsEqualsToken:
+            return '==';
+        case SyntaxType.BangEqualsToken:
+            return '!=';
+        case SyntaxType.OpenParenthesisToken:
+            return '(';
+        case SyntaxType.CloseParenthesisToken:
+            return ')';
+        case SyntaxType.FalseKeyword:
+            return 'false';
+        case SyntaxType.TrueKeyword:
+            return 'true';
+        default:
+            return '';
+        }
+    }
 }
