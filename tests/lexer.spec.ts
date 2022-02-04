@@ -15,6 +15,7 @@ describe('Lexer Tests', () => {
         {type: SyntaxType.SlashToken, value: '/'},
         {type: SyntaxType.BangToken, value: '!'},
         {type: SyntaxType.EqualsToken, value: '='},
+        {type: SyntaxType.ModToken, value: '%'},
         {type: SyntaxType.AmpersandAmpersandToken, value: '&&'},
         {type: SyntaxType.PipePipeToken, value: '||'},
         {type: SyntaxType.EqualsEqualsToken, value: '=='},

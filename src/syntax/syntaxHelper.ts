@@ -1,3 +1,4 @@
+import { SyntaxNode } from ".";
 import { SyntaxType } from "./syntax-type";
 
 export class SyntaxHelper {
@@ -94,6 +95,8 @@ export class SyntaxHelper {
              return '+';
         case SyntaxType.MinusToken:
             return '-';
+        case SyntaxType.ModToken:
+            return '%';
         case SyntaxType.StarToken:
             return '*';
         case SyntaxType.SlashToken:
@@ -121,5 +124,21 @@ export class SyntaxHelper {
         default:
             return '';
         }
+    }
+
+    public static flattenSyntaxNode(node:SyntaxNode) {
+        const items = [];
+        const stack: SyntaxNode[] = [];
+         stack.push(node);
+         while(stack.length) {
+             const n = stack.pop();
+             items.push(n);
+             if(n) {
+                for(const child of n.getChildren().reverse()) {
+                    stack.push(child);
+                }
+            }
+         }
+         return items;
     }
 }
