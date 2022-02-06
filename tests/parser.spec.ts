@@ -14,7 +14,18 @@ describe('Parser Tests', () => {
         return binaryOperatorPairs;
     }
 
+    const getUnaryOperatorPairs = () => {
+        const unaryOperatorPairs = [];
+        for(const unaryOp of SyntaxHelper.getUnaryOperatorTypes()) {
+            for(const binaryOp of SyntaxHelper.getBinaryOperatorTypes()) {
+                unaryOperatorPairs.push({unaryOp: unaryOp, binaryOp: binaryOp});
+            }
+        }
+        return unaryOperatorPairs;
+    }
+
     const binaryOperatorPairs = getBinaryOperatorPairs();
+    const unaryOperatorPairs = getUnaryOperatorPairs();
 
     const assertToken = (type:SyntaxType, text:string, flattenedNode:any[], idx:number) => {
         expect(flattenedNode[idx]).to.not.be.undefined;
@@ -29,7 +40,7 @@ describe('Parser Tests', () => {
         expect(flattenedNode[idx].type).to.equal(type);
     }
 
-    it(`should honour precedence for binary expressions (${binaryOperatorPairs.length} tests)`, () => {
+    it(`should honor precedence for binary expressions (${binaryOperatorPairs.length} tests)`, () => {
         for(const pair of binaryOperatorPairs) {
             const op1Precedence = SyntaxHelper.getBinaryOperatorPrecedence(pair.op1 as SyntaxType);
             const op2Precedence = SyntaxHelper.getBinaryOperatorPrecedence(pair.op2 as SyntaxType);
@@ -72,6 +83,49 @@ describe('Parser Tests', () => {
                 assertToken(pair.op2, op2Text, flattenedNode, 7);
                 assertNode(SyntaxType.NameExpression, flattenedNode, 8);
                 assertToken(SyntaxType.IdentifierToken, 'c', flattenedNode, 9);
+            }
+        }
+    });
+
+    it(`should honor precedence for unary expressions (${unaryOperatorPairs.length} tests)`, () => {
+        for(const pair of unaryOperatorPairs) {
+            const unaryPrecedence = SyntaxHelper.getUnaryOperatorPrecedence(pair.unaryOp as SyntaxType);
+            const binaryPrecedence = SyntaxHelper.getBinaryOperatorPrecedence(pair.binaryOp as SyntaxType);
+            const unaryText = SyntaxHelper.getTextForFixedTokens(pair.unaryOp as SyntaxType);
+            const binaryText = SyntaxHelper.getTextForFixedTokens(pair.binaryOp as SyntaxType);
+            const text = `${unaryText} a ${binaryText} b`;
+
+            const expression = SyntaxTree.parse(text).root;
+            const flattenedNode = SyntaxHelper.flattenSyntaxNode(expression);
+            
+            if(unaryPrecedence >= binaryPrecedence) {
+                //      binary
+                //    /     \
+                //  unary    b
+                //  /  
+                // a  
+                assertNode(SyntaxType.BinaryExpression, flattenedNode, 0);
+                assertNode(SyntaxType.UnaryExpression, flattenedNode, 1);
+                assertToken(pair.unaryOp, unaryText, flattenedNode, 2);
+                assertNode(SyntaxType.NameExpression, flattenedNode, 3);
+                assertToken(SyntaxType.IdentifierToken, 'a', flattenedNode, 4);
+                assertToken(pair.binaryOp, binaryText, flattenedNode, 5);
+                assertNode(SyntaxType.NameExpression, flattenedNode, 6);
+                assertToken(SyntaxType.IdentifierToken, 'b', flattenedNode, 7);
+            } else {
+                //      unary
+                //    /   
+                //   binary   
+                //  /  \
+                // a   b
+                assertNode(SyntaxType.UnaryExpression, flattenedNode, 0);
+                assertToken(pair.unaryOp, unaryText, flattenedNode, 1);
+                assertNode(SyntaxType.BinaryExpression, flattenedNode, 2);
+                assertNode(SyntaxType.NameExpression, flattenedNode, 3);
+                assertToken(SyntaxType.IdentifierToken, 'a', flattenedNode, 4);
+                assertToken(pair.binaryOp, binaryText, flattenedNode, 5);
+                assertNode(SyntaxType.NameExpression, flattenedNode, 6);
+                assertToken(SyntaxType.IdentifierToken, 'b', flattenedNode, 7);
             }
         }
     });
