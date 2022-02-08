@@ -58,7 +58,7 @@ export class Parser implements IParser {
         switch(this.getCurrent().type) {
             case SyntaxType.OpenParenthesisToken:
                 const left = this.nextToken();
-                const expression = this.parseBinaryExpression();
+                const expression = this.parseExpression();
                 const right = this.match(SyntaxType.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left,expression,right);
 

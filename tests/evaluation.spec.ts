@@ -27,7 +27,7 @@ describe('Evaluation tests', () => {
         {expression:'false != false', expectedResult:false},
         {expression:'true != false', expectedResult:true},  
 
-        {expression:'a = 10 * a', expectedResult:100} 
+        {expression:'(a = 10) * a', expectedResult:100} 
     ]
 
     it(`should correctly evaluate test expressions (${evaluationTestExpressions.length} tests)`, () => {
@@ -39,7 +39,6 @@ describe('Evaluation tests', () => {
             const compilation = new Compilation(expression, vars);
             const result = compilation.evaluate(vars);
 
-            console.log(result.diagnostics);
             expect(result.diagnostics).to.be.an('array').that.is.empty;
 
             expect(result.value).to.equal(test.expectedResult);
