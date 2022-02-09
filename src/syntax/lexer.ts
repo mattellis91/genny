@@ -11,6 +11,11 @@ export class Lexer implements ILexer{
     private _position:number = 0;
     public diagnosticBag:DiagnosticBag = new DiagnosticBag();
 
+    private _type:SyntaxType = SyntaxType.UnknownToken;
+    private _start:number = 0;
+    private _end:number = 0;
+    private _value:any;
+
     constructor(text:string) {
         this._text = text;
     }
@@ -21,10 +26,6 @@ export class Lexer implements ILexer{
 
     private lookAhead(): string {
         return this.peek(1);
-    }
-
-    private next(): void {
-        this._position++;
     }
 
     private peek(offset:number): string {
@@ -65,97 +66,136 @@ export class Lexer implements ILexer{
 
     public lex() : SyntaxToken {
 
-        //End of file
-        if(this._position >= this._text.length) {
-            return new SyntaxToken(SyntaxType.EOFToken, this._position, "\0", null);
-        }
-
-        let start = this._position;
-
-        //get number token
-        if(this.charIsNumber(this.getCurrentChar().charCodeAt(0))) {
-            while(this.charIsNumber(this.getCurrentChar().charCodeAt(0))) {
-                this.next();
-            }
-
-            const length = this._position - start;
-            const text = this._text.substring(start, start + length);
-            const value = Number.parseInt(text);
-            if(isNaN(value)) {
-                this.diagnosticBag.reportInvalidNumber(new TextSpan(start,length), this._text, typeof(1));
-            }
-            return new SyntaxToken(SyntaxType.NumberToken, start, text, value);
-        }
-
-        //get white space token
-        if (this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
-
-            while(this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
-                this.next();
-            }
-            const length = this._position - start;
-
-            const text = this._text.substring(start, start + length);
-            return new SyntaxToken(SyntaxType.WhitespaceToken, start, text, null);
-        }
-
-        //get keyword token
-        if(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))) {
-
-            while(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))){
-                this.next();
-            }
-            const length = this._position - start;
-            const text = this._text.substring(start, start + length);
-            const keywordType = SyntaxHelper.getKeywordType(text);
-            return new SyntaxToken(keywordType,start,text, null);
-        }
+        this._start = this._position;
+        this._type = SyntaxType.UnknownToken;
+        this._value = null;
 
         switch(this.getCurrentChar()) {
+            case '\0':
+                this._type = SyntaxType.EOFToken;
+                break;
             case '+':
-                return new SyntaxToken(SyntaxType.PlusToken, this._position++, "+", null);
+                this._type = SyntaxType.PlusToken;
+                this._position++;
+                break;
             case '-':
-                return new SyntaxToken(SyntaxType.MinusToken, this._position++, "-", null);
+                this._type = SyntaxType.MinusToken;
+                this._position++
+                break;
             case '*':
-                return new SyntaxToken(SyntaxType.StarToken, this._position++, "*", null);
+                this._type = SyntaxType.StarToken;
+                this._position++
+                break;
             case '/':
-                return new SyntaxToken(SyntaxType.SlashToken, this._position++, "/", null);
+                this._type = SyntaxType.SlashToken;
+                this._position++
+                break;
             case '(':
-                return new SyntaxToken(SyntaxType.OpenParenthesisToken, this._position++, "(", null);
+                this._type = SyntaxType.OpenParenthesisToken;
+                this._position++;
+                break;
             case ')':
-                return new SyntaxToken(SyntaxType.CloseParenthesisToken, this._position++, ")", null);
+                this._type = SyntaxType.CloseParenthesisToken;
+                this._position++;
+                break;
             case '%':
-                return new SyntaxToken(SyntaxType.ModToken, this._position++, "%", null);
+                this._type = SyntaxType.ModToken;
+                this._position++;
+                break;
             case '&':
                 if(this.lookAhead() === '&') {
                     this._position += 2;
-                    return new SyntaxToken(SyntaxType.AmpersandAmpersandToken, start, '&&', null);
+                    this._type = SyntaxType.AmpersandAmpersandToken;
                 }
                 break;
             case '|':
                 if(this.lookAhead() === '|') {
                     this._position += 2;
-                    return new SyntaxToken(SyntaxType.PipePipeToken, start, '||', null);
+                    this._type = SyntaxType.PipePipeToken;
                 }
                 break;
             case '=':
                 if(this.lookAhead() === '=') {
                     this._position += 2;
-                    return new SyntaxToken(SyntaxType.EqualsEqualsToken, start, '==', null);
+                    this._type = SyntaxType.EqualsEqualsToken;
+                    break;
                 }
                 this._position += 1;
-                return new SyntaxToken(SyntaxType.EqualsToken, start, '=', null);
+                this._type = SyntaxType.EqualsToken;
+                break;
             case '!':
                 if(this.lookAhead() === '=') {
                     this._position += 2;
-                    return new SyntaxToken(SyntaxType.BangEqualsToken, start, '!=', null);
+                    this._type = SyntaxType.BangEqualsToken;
+                    break;
                 }
                 this._position += 1;
-                return new SyntaxToken(SyntaxType.BangToken, start, '!', null);
+                this._type = SyntaxType.BangToken;
+                break;
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9': 
+                this.readNumberToken();
+                break;
+            case ' ': case '\t': case '\n': case '\r':
+                this.readWhiteSpaceToken();
+                break;
+            default:
+                //keyword / identifier token
+                if(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))) {
+                    this.readIdentifierOrKeywordToken();
+                }
+
+                //whitespace token for with non common white space char
+                else if (this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
+                    this.readWhiteSpaceToken();
+                }
+
+                //unknown token
+                else {
+                    this.diagnosticBag.reportUnkownCharacter(this._position, this.getCurrentChar());
+                    this._position += 1;
+                }
+                break;
         }
 
-        //unknown token
-        this.diagnosticBag.reportUnkownCharacter(this._position, this.getCurrentChar());
-        return new SyntaxToken(SyntaxType.UnknownToken, this._position++, this._text.substring(this._position - 1, 1), null);
+        const length = this._position - this._start;
+        let text = SyntaxHelper.getTextForFixedTokens(this._type);
+        if(!text) {
+            text = this._text.substring(this._start, this._start + length);
+        }
+        return new SyntaxToken(this._type, this._start, text, this._value);
+    }
+
+    private readNumberToken():void {
+        while(this.charIsNumber(this.getCurrentChar().charCodeAt(0))) {
+            this._position++;
+        }
+
+        const length = this._position - this._start;
+        const text = this._text.substring(this._start, this._start + length);
+        const value = Number.parseInt(text);
+        if(isNaN(value)) {
+            this.diagnosticBag.reportInvalidNumber(new TextSpan(this._start,length), this._text, typeof(1));
+        }
+
+        this._value = value;
+        this._type = SyntaxType.NumberToken;
+    }
+
+    private readWhiteSpaceToken():void {
+        while(this.charIsBlank(this.getCurrentChar().charCodeAt(0))) {
+            this._position++;
+        }
+
+        this._type = SyntaxType.WhitespaceToken;
+    }
+
+    private readIdentifierOrKeywordToken():void {
+        while(this.charIsAlpha(this.getCurrentChar().charCodeAt(0))){
+            this._position++;
+        }
+        const length = this._position - this._start;
+        const text = this._text.substring(this._start, this._start + length);
+        this._type = SyntaxHelper.getKeywordType(text);
     }
 }
