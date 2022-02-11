@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { type } from 'os';
 import {Lexer, Parser, SyntaxHelper, SyntaxTree, SyntaxType} from '../src';
 
 describe('Lexer Tests', () => {
@@ -82,7 +83,15 @@ describe('Lexer Tests', () => {
         }).map((type)=> {return {type:type, value: SyntaxHelper.getTextForFixedTokens(type)}});
     }
 
+    const getAllTokenTypes = () => {
+        return SyntaxHelper.getSyntaxTypes().filter((type) => {
+            return (type.toString().endsWith('Token') || type.toString().endsWith('Keyword')) &&
+                type !== SyntaxType.UnknownToken && type !== SyntaxType.EOFToken
+        });
+    }
+
     const fixedTokens = getTokensWithFixedText();
+    const allTokenTypes = getAllTokenTypes();
 
     const singleTokens = [...dynamicTokens, ...separators, ...fixedTokens];
     const singleTokensWithoutSeps = [...dynamicTokens, ...fixedTokens];
@@ -122,5 +131,17 @@ describe('Lexer Tests', () => {
             expect(parserTokens[0].type).to.equal(tokenPair.t1Type);
             expect(parserTokens[1].type).to.equal(tokenPair.t2Type);
         }
+    });
+
+    it(`Should test all token types`, () => {
+        const testedTokens:string[] = [];
+        for(const token of singleTokens) {
+            if(testedTokens.includes(token.type)) {
+                continue;
+            } else if(allTokenTypes.includes(token.type)) {
+                testedTokens.push(token.type);
+            }
+        }
+        expect(allTokenTypes.length).to.equal(testedTokens.length);
     });
 });
