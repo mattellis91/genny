@@ -64,9 +64,7 @@ export class SyntaxHelper {
     }
 
     public static getSyntaxTypes(): SyntaxType[] {
-        return Object.keys(SyntaxType).filter((item) => {
-            return isNaN(Number(item));
-        }) as SyntaxType[];
+        return Object.keys(SyntaxType) as SyntaxType[];
     }
 
     public static getBinaryOperatorTypes(): SyntaxType[] {

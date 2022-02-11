@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import {Lexer, Parser, SyntaxTree, SyntaxType} from '../src';
+import {Lexer, Parser, SyntaxHelper, SyntaxTree, SyntaxType} from '../src';
 
 describe('Lexer Tests', () => {
 
@@ -8,22 +8,7 @@ describe('Lexer Tests', () => {
         value:string
     }
 
-    const tokensToCheck:Token[] = [
-        {type: SyntaxType.PlusToken, value: '+'},
-        {type: SyntaxType.MinusToken, value: '-'},
-        {type: SyntaxType.StarToken, value: '*'},
-        {type: SyntaxType.SlashToken, value: '/'},
-        {type: SyntaxType.BangToken, value: '!'},
-        {type: SyntaxType.EqualsToken, value: '='},
-        {type: SyntaxType.ModToken, value: '%'},
-        {type: SyntaxType.AmpersandAmpersandToken, value: '&&'},
-        {type: SyntaxType.PipePipeToken, value: '||'},
-        {type: SyntaxType.EqualsEqualsToken, value: '=='},
-        {type: SyntaxType.BangEqualsToken, value: '!='},
-        {type: SyntaxType.OpenParenthesisToken, value: '('},
-        {type: SyntaxType.CloseParenthesisToken, value: ')'},
-        {type: SyntaxType.FalseKeyword, value: 'false'},
-        {type: SyntaxType.TrueKeyword, value: 'true'},
+    const dynamicTokens:Token[] = [
         {type: SyntaxType.NumberToken, value: '123'},
         {type: SyntaxType.IdentifierToken, value: 'a'},
         {type: SyntaxType.IdentifierToken, value: 'abc'}
@@ -58,8 +43,8 @@ describe('Lexer Tests', () => {
 
     const getTokenPairs = () => {
         const tokenPairs = [];
-        for(const t1 of tokensToCheck) {
-            for(const t2 of tokensToCheck) {
+        for(const t1 of singleTokensWithoutSeps) {
+            for(const t2 of singleTokensWithoutSeps) {
                 if(!requiresSeparator(t1, t2)) {
                     tokenPairs.push({t1Type: t1.type, t1Value: t1.value, t2Type: t2.type, t2Value: t2.value});
                 }
@@ -71,8 +56,8 @@ describe('Lexer Tests', () => {
 
     const getTokenPairsWithSeparator = () => {
         const tokenPairs = [];
-        for(const t1 of tokensToCheck) {
-            for(const t2 of tokensToCheck) {
+        for(const t1 of singleTokensWithoutSeps) {
+            for(const t2 of singleTokensWithoutSeps) {
                 if(requiresSeparator(t1, t2)) {
                     for(const sep of separators){
                         tokenPairs.push({
@@ -91,7 +76,16 @@ describe('Lexer Tests', () => {
         return tokenPairs;
     }
 
-    const singleTokens = [...tokensToCheck, ...separators];
+    const getTokensWithFixedText = () => {
+        return SyntaxHelper.getSyntaxTypes().filter((type) => {
+            return SyntaxHelper.getTextForFixedTokens(type);
+        }).map((type)=> {return {type:type, value: SyntaxHelper.getTextForFixedTokens(type)}});
+    }
+
+    const fixedTokens = getTokensWithFixedText();
+
+    const singleTokens = [...dynamicTokens, ...separators, ...fixedTokens];
+    const singleTokensWithoutSeps = [...dynamicTokens, ...fixedTokens];
     const singleTokensLength = singleTokens.length;
 
     const tokenPairs = getTokenPairs();
