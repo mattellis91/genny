@@ -22,62 +22,81 @@ export class Evaluator implements IEvaluator {
     private evaluateExpression(node: BoundExpression): any{
 
         if(node instanceof BoundLiteralExpression) {
-            return node.value;
+            return this.evaluateLiteralExpression(node);
         }
 
-        if(node instanceof BoundVariableExpression) {
-            return this._variables.get(node.variable);
+        else if(node instanceof BoundVariableExpression) {
+            return this.evaluateVariableExpression(node);
         }
 
-        if(node instanceof BoundAssignmentExpression) {
-            const value = this.evaluateExpression(node.expression);
-            this._variables.set(node.variable, value);
-            return value;
+        else if(node instanceof BoundAssignmentExpression) {
+            return this.evaluateAssignmentExpression(node);
         }
 
-        if(node instanceof BoundUnaryExpression) {
-            const operand = this.evaluateExpression(node.operand);
-
-            switch(node.operator.boundUnaryOperatorType) {
-                case BoundUnaryOperatorType.Identity:
-                    return operand as number;
-                case BoundUnaryOperatorType.Negation:
-                    return -(operand as number);
-                case BoundUnaryOperatorType.LogicalNegation:
-                    return !(operand as boolean);
-                default:
-                    throw new Error("ERROR: Unexpected unary operator: " + node.operator.boundUnaryOperatorType);
-            }
+        else if(node instanceof BoundUnaryExpression) {
+            return this.evaluateUnaryExpression(node);
         }
 
-        if(node instanceof BoundBinaryExpression) {
-            const left = this.evaluateExpression(node.left) ;
-            const right = this.evaluateExpression(node.right);
-       
-            switch(node.operator.boundBinaryOperatorType) {
-                case BoundBinaryOperatorType.Addition:
-                    return (left as number) + (right as number); 
-                case BoundBinaryOperatorType.Subtraction:
-                    return (left as number) - (right as number);
-                case BoundBinaryOperatorType.Multiplication:
-                    return (left as number) * (right as number);
-                case BoundBinaryOperatorType.Division:
-                    return (left as number) / (right as number);
-                case BoundBinaryOperatorType.Modulus:
-                    return (left as number) % (right as number);
-                case BoundBinaryOperatorType.LogicalAnd:
-                    return (left as boolean) && (right as boolean);
-                case BoundBinaryOperatorType.LogicalOr:
-                    return (left as boolean) || (right as boolean);
-                case BoundBinaryOperatorType.Equals:
-                    return left === right;
-                case BoundBinaryOperatorType.NotEquals:
-                    return left !== right;
-                default:
-                    throw new Error("ERROR: Unexpected binary expression operator: " + node.operator.boundBinaryOperatorType);
-            }
+        else if(node instanceof BoundBinaryExpression) {
+            return this.evaluateBinaryExpression(node);
         }
 
         throw new Error("ERROR: Unexpected node: " + node.type);
+    }
+
+    private evaluateLiteralExpression(node: BoundLiteralExpression): any {
+        return node.value;
+    }
+
+    private evaluateVariableExpression(node: BoundVariableExpression): any {
+        return this._variables.get(node.variable);
+    }
+
+    private evaluateAssignmentExpression(node: BoundAssignmentExpression): any {
+        const value = this.evaluateExpression(node.expression);
+        this._variables.set(node.variable, value);
+        return value;
+    }
+
+    private evaluateUnaryExpression(node: BoundUnaryExpression): any {
+        const operand = this.evaluateExpression(node.operand);
+        switch(node.operator.boundUnaryOperatorType) {
+            case BoundUnaryOperatorType.Identity:
+                return operand as number;
+            case BoundUnaryOperatorType.Negation:
+                return -(operand as number);
+            case BoundUnaryOperatorType.LogicalNegation:
+                return !(operand as boolean);
+            default:
+                throw new Error("ERROR: Unexpected unary operator: " + node.operator.boundUnaryOperatorType);
+        }
+    }
+
+    private evaluateBinaryExpression(node: BoundBinaryExpression): any {
+        const left = this.evaluateExpression(node.left) ;
+        const right = this.evaluateExpression(node.right);
+    
+        switch(node.operator.boundBinaryOperatorType) {
+            case BoundBinaryOperatorType.Addition:
+                return (left as number) + (right as number); 
+            case BoundBinaryOperatorType.Subtraction:
+                return (left as number) - (right as number);
+            case BoundBinaryOperatorType.Multiplication:
+                return (left as number) * (right as number);
+            case BoundBinaryOperatorType.Division:
+                return (left as number) / (right as number);
+            case BoundBinaryOperatorType.Modulus:
+                return (left as number) % (right as number);
+            case BoundBinaryOperatorType.LogicalAnd:
+                return (left as boolean) && (right as boolean);
+            case BoundBinaryOperatorType.LogicalOr:
+                return (left as boolean) || (right as boolean);
+            case BoundBinaryOperatorType.Equals:
+                return left === right;
+            case BoundBinaryOperatorType.NotEquals:
+                return left !== right;
+            default:
+                throw new Error("ERROR: Unexpected binary expression operator: " + node.operator.boundBinaryOperatorType);
+        }
     }
 }
