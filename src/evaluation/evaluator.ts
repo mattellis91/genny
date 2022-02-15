@@ -1,6 +1,7 @@
 import { BoundExpression, BoundUnaryExpression, BoundVariableExpression, BoundAssignmentExpression } from "../binding";
 import { BoundBinaryExpression } from "../binding/boundBinaryExpression";
 import { BoundBinaryOperatorType } from "../binding/boundBinaryOperatorType";
+import { BoundNodeType } from "../binding/boundNodeType";
 import { BoundLiteralExpression } from "../binding/boundLiteralExpression";
 import { BoundUnaryOperatorType } from "../binding/boundUnaryOperatorType";
 import { VariableSymbol } from "../compilation/variableSymbol";
@@ -20,28 +21,20 @@ export class Evaluator implements IEvaluator {
     }
 
     private evaluateExpression(node: BoundExpression): any{
-
-        if(node instanceof BoundLiteralExpression) {
-            return this.evaluateLiteralExpression(node);
+        switch(node.boundNodeType) {
+            case BoundNodeType.LiteralExpression:
+                return this.evaluateLiteralExpression(node as BoundLiteralExpression);
+            case BoundNodeType.VariableExpression:
+                return this.evaluateVariableExpression(node as BoundVariableExpression);
+            case BoundNodeType.AssignmentExpression:
+                return this.evaluateAssignmentExpression(node as BoundAssignmentExpression);
+            case BoundNodeType.UnaryExpression:
+                return this.evaluateUnaryExpression(node as BoundUnaryExpression);
+            case BoundNodeType.BinaryExpression:
+                return this.evaluateBinaryExpression(node as BoundBinaryExpression);
+            default:
+                throw new Error("ERROR: Unexpected node: " + node.type) 
         }
-
-        else if(node instanceof BoundVariableExpression) {
-            return this.evaluateVariableExpression(node);
-        }
-
-        else if(node instanceof BoundAssignmentExpression) {
-            return this.evaluateAssignmentExpression(node);
-        }
-
-        else if(node instanceof BoundUnaryExpression) {
-            return this.evaluateUnaryExpression(node);
-        }
-
-        else if(node instanceof BoundBinaryExpression) {
-            return this.evaluateBinaryExpression(node);
-        }
-
-        throw new Error("ERROR: Unexpected node: " + node.type);
     }
 
     private evaluateLiteralExpression(node: BoundLiteralExpression): any {
