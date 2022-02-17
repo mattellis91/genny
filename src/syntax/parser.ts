@@ -57,26 +57,40 @@ export class Parser implements IParser {
 
         switch(this.getCurrent().type) {
             case SyntaxType.OpenParenthesisToken:
-                const left = this.nextToken();
-                const expression = this.parseExpression();
-                const right = this.match(SyntaxType.CloseParenthesisToken);
-                return new ParenthesizedExpressionSyntax(left,expression,right);
-
+                return this.parseParenthesizedExpression();
             case SyntaxType.TrueKeyword:
             case SyntaxType.FalseKeyword:
-                const keywordToken = this.nextToken();
-                const value = keywordToken.type === SyntaxType.TrueKeyword;
-                return new LiteralExpressionSyntax(keywordToken, value);
-
+                return this.parseBooleanLiteral();
+            case SyntaxType.NumberToken:
+                return this.parseNumberLiteral();
             case SyntaxType.IdentifierToken:
-                const identifierToken = this.nextToken();
-                return new NameExpressionSyntax(identifierToken);
-
             default:
-                const numberToken = this.match(SyntaxType.NumberToken);
-                return new LiteralExpressionSyntax(numberToken)
+                return this.parseNameExpression();
 
         }
+    }
+
+    private parseParenthesizedExpression() {
+        const left = this.match(SyntaxType.OpenParenthesisToken);
+        const expression = this.parseExpression();
+        const right = this.match(SyntaxType.CloseParenthesisToken);
+        return new ParenthesizedExpressionSyntax(left, expression, right);
+    }
+
+    private parseBooleanLiteral() {
+        const isTrue = this.getCurrent().type === SyntaxType.TrueKeyword
+        const keywordToken = isTrue ? this.match(SyntaxType.TrueKeyword) : this.match(SyntaxType.FalseKeyword);
+        return new LiteralExpressionSyntax(keywordToken, isTrue);
+    }
+
+    private parseNameExpression() {
+        const identifierToken = this.match(SyntaxType.IdentifierToken);
+        return new NameExpressionSyntax(identifierToken);
+    }
+
+    private parseNumberLiteral() {
+        const numberToken = this.match(SyntaxType.NumberToken);
+        return new LiteralExpressionSyntax(numberToken)
     }
 
     private match(type:SyntaxType): SyntaxToken {
