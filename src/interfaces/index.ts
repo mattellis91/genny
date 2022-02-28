@@ -4,3 +4,4 @@ export * from './canvas-interfaces';
 export * from './evaluation-interfaces';
 export * from './binding-interfaces';
 export * from './compilation-interfaces';
+export * from './text-interfaces';

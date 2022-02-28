@@ -1,5 +1,5 @@
 import { DiagnosticBag } from "../compilation/diagnosticBag";
-import { TextSpan } from "../compilation/textSpan";
+import { TextSpan } from "../text/textSpan";
 import { ILexer } from "../interfaces/syntax-interfaces/i-lexer";
 import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";

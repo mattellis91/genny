@@ -1,5 +1,5 @@
 import { DiagnosticBag } from "../../compilation/diagnosticBag";
-import { TextSpan } from "../../compilation/textSpan";
+import { TextSpan } from "../../text/textSpan";
 import { SyntaxType } from "../../syntax/syntax-type";
 
 export interface IDiagnosticBag {

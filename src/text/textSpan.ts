@@ -1,4 +1,4 @@
-import { ITextSpan } from "../interfaces/compilation-interfaces/i-textSpan";
+import { ITextSpan } from "../interfaces/text-interfaces/i-textSpan";
 
 export class TextSpan implements ITextSpan {
     public start:number;
@@ -9,5 +9,9 @@ export class TextSpan implements ITextSpan {
         this.start = start;
         this.length = length;
         this.end = this.start + this.length;
+    }
+
+    public static fromBounds(start:number,end:number):TextSpan {
+        return new TextSpan(start,end);
     }
 }

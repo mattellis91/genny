@@ -5,3 +5,4 @@ export * from './evaluation';
 export * from './syntax';
 export * from './util';
 export * from './compilation';
+export * from './text';

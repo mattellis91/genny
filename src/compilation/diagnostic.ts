@@ -1,5 +1,5 @@
 import { IDiagnostic } from "../interfaces/compilation-interfaces/i-diagnostic";
-import { TextSpan } from "./textSpan";
+import { TextSpan } from "../text/textSpan";
 
 export class Diagnostic implements IDiagnostic {
     public span:TextSpan;

@@ -1,7 +1,7 @@
 import { IDiagnosticBag } from "../interfaces/compilation-interfaces/i-diagnosticBag";
 import { SyntaxType } from "../syntax";
 import { Diagnostic } from "./diagnostic";
-import { TextSpan } from "./textSpan";
+import { TextSpan } from "../text/textSpan";
 
 export class DiagnosticBag implements IDiagnosticBag {
     public diagnostics:Diagnostic[] = [];
