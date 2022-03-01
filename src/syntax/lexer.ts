@@ -4,10 +4,11 @@ import { ILexer } from "../interfaces/syntax-interfaces/i-lexer";
 import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";
 import { SyntaxHelper } from "./syntaxHelper";
+import { SourceText } from "..";
 
 export class Lexer implements ILexer{
 
-    private readonly _text:string;
+    private readonly _text:SourceText;
     private _position:number = 0;
     public diagnosticBag:DiagnosticBag = new DiagnosticBag();
 
@@ -16,7 +17,7 @@ export class Lexer implements ILexer{
     private _end:number = 0;
     private _value:any;
 
-    constructor(text:string) {
+    constructor(text:SourceText) {
         this._text = text;
     }
 
@@ -30,10 +31,10 @@ export class Lexer implements ILexer{
 
     private peek(offset:number): string {
         const index = this._position + offset;
-        if(index >= this._text.length) {
+        if(index >= this._text.getLength()) {
             return '\0';
         } else {
-            return this._text[index];
+            return this._text.getCharAtIndex(index);
         }
     }
 
@@ -161,7 +162,7 @@ export class Lexer implements ILexer{
         const length = this._position - this._start;
         let text = SyntaxHelper.getTextForFixedTokens(this._type);
         if(!text) {
-            text = this._text.substring(this._start, this._start + length);
+            text = this._text.toSubString(this._start, this._start + length);
         }
         return new SyntaxToken(this._type, this._start, text, this._value);
     }
@@ -172,10 +173,10 @@ export class Lexer implements ILexer{
         }
 
         const length = this._position - this._start;
-        const text = this._text.substring(this._start, this._start + length);
+        const text = this._text.toSubString(this._start, this._start + length);
         const value = Number.parseInt(text);
         if(isNaN(value)) {
-            this.diagnosticBag.reportInvalidNumber(new TextSpan(this._start,length), this._text, typeof(1));
+            this.diagnosticBag.reportInvalidNumber(new TextSpan(this._start,length), text, typeof(1));
         }
 
         this._value = value;
@@ -195,7 +196,7 @@ export class Lexer implements ILexer{
             this._position++;
         }
         const length = this._position - this._start;
-        const text = this._text.substring(this._start, this._start + length);
+        const text = this._text.toSubString(this._start, this._start + length);
         this._type = SyntaxHelper.getKeywordType(text);
     }
 }

@@ -1,5 +1,6 @@
 
 import { AssignmentExpressionSyntax, NameExpressionSyntax } from ".";
+import { SourceText } from "..";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IParser } from "../interfaces/syntax-interfaces/i-parser";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
@@ -18,8 +19,10 @@ export class Parser implements IParser {
     private readonly _tokens:SyntaxToken[];
     private _position:number = 0;
     public diagnosticBag:DiagnosticBag = new DiagnosticBag();
+    private _text:SourceText;
 
-    constructor(text:string) {
+    constructor(text:SourceText) {
+        this._text = text;
         const tokens:SyntaxToken[] =  [];
         const lexer = new Lexer(text);
         let token:SyntaxToken;
@@ -152,12 +155,17 @@ export class Parser implements IParser {
     public parse(): SyntaxTree {
         const expression = this.parseExpression();
         const eof = this.match(SyntaxType.EOFToken);
-        return new SyntaxTree(expression, eof, this.diagnosticBag.diagnostics);
+        return new SyntaxTree(this._text, expression, eof, this.diagnosticBag.diagnostics);
     }
 
     //gets the final list of tokens that the lexer produces for the parsing step. 
     //only use in unit test to test lexing where there are multiple tokens in the input text
     public getTokenListForTests(text:string) {
+        const sourceText = SourceText.from(text);
+        return this.getTokenListForTestsFromSourceText(sourceText);
+    }
+
+    public getTokenListForTestsFromSourceText(text:SourceText) {
         const tokens:SyntaxToken[] =  [];
         const lexer = new Lexer(text);
         let token:SyntaxToken;

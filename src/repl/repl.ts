@@ -37,8 +37,9 @@ export class Repl implements IRepl{
             }
 
             if(diagnostics.length) {
+                const text = syntaxTree.text;
                 for(const diagnostic of diagnostics) {
-                    Util.logErrorMessage(input, diagnostic);
+                    Util.logErrorMessage(input, text, diagnostic);
                 }
             } else {
                 console.log(result.value);

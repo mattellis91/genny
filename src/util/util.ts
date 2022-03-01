@@ -1,6 +1,7 @@
 import colors from 'colors/safe';
 import { SyntaxNode } from '../syntax/syntaxNode';
 import { Diagnostic } from "../compilation/diagnostic";
+import { SourceText } from '..';
 
 export class Util {
 
@@ -26,10 +27,14 @@ export class Util {
         }
     }
 
-    public static logErrorMessage(input:string, diagnostic:Diagnostic) {
+    public static logErrorMessage(input:string, text:SourceText, diagnostic:Diagnostic) {
+
+      const lineIndex = text.getLineIndex(diagnostic.span.start);
+      const lineNumber = lineIndex + 1;
+      const char = diagnostic.span.start - text.lines[lineIndex].start + 1;
 
       console.log("\n");
-      console.log(colors.red(diagnostic.message));
+      console.log(colors.red(`(${lineNumber}, ${char}): ` + diagnostic.message));
 
       const prefix = input.substr(0, diagnostic.span.start);
       const error = input.substr(diagnostic.span.start, diagnostic.span.length);

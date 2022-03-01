@@ -50,6 +50,9 @@ describe('Parser Tests', () => {
 
             const expression = SyntaxTree.parse(text).root;
             const flattenedNode = SyntaxHelper.flattenSyntaxNode(expression);
+
+            // console.log(text);
+            // console.log(expression);
             
             if(op1Precedence >= op2Precedence) {
                 //      op2

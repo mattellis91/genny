@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { type } from 'os';
-import {Lexer, Parser, SyntaxHelper, SyntaxTree, SyntaxType} from '../src';
+import {Lexer, Parser, SourceText, SyntaxHelper, SyntaxTree, SyntaxType} from '../src';
 
 describe('Lexer Tests', () => {
 
@@ -105,7 +105,7 @@ describe('Lexer Tests', () => {
 
     it(`Should correctly identify syntax types (${singleTokensLength} tests)`, () => {
         for(const item of singleTokens) {
-            const lexer = new Lexer(item.value);
+            const lexer = new Lexer(SourceText.from(item.value));
             const token = lexer.lex();
             expect(token.type).to.equal(item.type);
         }
@@ -113,8 +113,8 @@ describe('Lexer Tests', () => {
 
     it(`Should correctly parse token pairs (${tokenPairsLength} tests)`, () => {
         for(const tokenPair of tokenPairs) {
-            const pairText = tokenPair.t1Value + tokenPair.t2Value;
-            const parserTokens = new Parser(pairText).getTokenListForTests(pairText);
+            const pairText = SourceText.from(tokenPair.t1Value + tokenPair.t2Value);
+            const parserTokens = new Parser(pairText).getTokenListForTestsFromSourceText(pairText);
             expect(parserTokens.length).to.equal(3);
             expect(parserTokens[2].type).to.equal(SyntaxType.EOFToken);
             expect(parserTokens[0].type).to.equal(tokenPair.t1Type);
@@ -124,8 +124,8 @@ describe('Lexer Tests', () => {
 
     it(`Should correctly parse token pairs with separators (${tokenSepPairsLength} tests)`, () => {
         for(const tokenPair of tokenSepPairs) {
-            const pairText = tokenPair.t1Value + tokenPair.sepValue + tokenPair.t2Value;
-            const parserTokens = new Parser(pairText).getTokenListForTests(pairText);
+            const pairText = SourceText.from(tokenPair.t1Value + tokenPair.sepValue + tokenPair.t2Value);
+            const parserTokens = new Parser(pairText).getTokenListForTestsFromSourceText(pairText);
             expect(parserTokens.length).to.equal(3);
             expect(parserTokens[2].type).to.equal(SyntaxType.EOFToken);
             expect(parserTokens[0].type).to.equal(tokenPair.t1Type);
