@@ -11,22 +11,45 @@ export class Repl implements IRepl{
     main():void {
         let showTree = false;
         const variables = new Map<VariableSymbol, object>();
+        let text = '';
 
         while(true) {
-            const input = readlineSync.question(">:");
-            if(input === 'q') return;
-            if(input === '$showTree') {
-                showTree = !showTree;
-                console.log(showTree ? "Showing parse trees" : "Hiding parse trees");
-                continue;
+
+            if(!text.length) {
+                process.stdout.write(">: ");
+            } else {
+                console.log("| ");
+            }
+            
+            const input = readlineSync.question();
+            const isBlank = !input;
+
+            if(!text.length) {
+
+                if(isBlank) {
+                    break;
+                }
+
+                else if(input === 'q') return;
+                else if(input === '$showTree') {
+                    showTree = !showTree;
+                    console.log(showTree ? "Showing parse trees" : "Hiding parse trees");
+                    continue;
+                }
+
+                else if(input === '$cls') {
+                    console.clear();
+                    continue;
+                }
             }
 
-            if(input === '$cls') {
-                console.clear();
+            text += input;
+
+            const syntaxTree = SyntaxTree.parse(text);
+
+            if(!isBlank && syntaxTree.diagnostics.length) {
                 continue;
             }
-
-            const syntaxTree = SyntaxTree.parse(input);
 
             const compilation = new Compilation(syntaxTree, variables);
             const result = compilation.evaluate(variables);
@@ -44,6 +67,8 @@ export class Repl implements IRepl{
             } else {
                 console.log(result.value);
             }
+
+            text = '';
         }
     }
 }

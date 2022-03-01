@@ -31,14 +31,15 @@ export class Util {
 
       const lineIndex = text.getLineIndex(diagnostic.span.start);
       const lineNumber = lineIndex + 1;
-      const char = diagnostic.span.start - text.lines[lineIndex].start + 1;
+      const textLine = text.lines[lineIndex];
+      const char = diagnostic.span.start - textLine.start + 1;
 
       console.log("\n");
       console.log(colors.red(`(${lineNumber}, ${char}): ` + diagnostic.message));
 
-      const prefix = input.substr(0, diagnostic.span.start);
-      const error = input.substr(diagnostic.span.start, diagnostic.span.length);
-      const suffix = input.substr(diagnostic.span.end);
+      const prefix = text.toSubString(textLine.start, textLine.start + diagnostic.span.start);
+      const error = text.toSubString(diagnostic.span.start, diagnostic.span.start + diagnostic.span.length);
+      const suffix = text.toSubString(diagnostic.span.end, diagnostic.span.end + textLine.end);
 
       process.stdout.write("\t");
       process.stdout.write(prefix);
