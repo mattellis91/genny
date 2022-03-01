@@ -17,7 +17,7 @@ export class SyntaxToken extends SyntaxNode implements ISyntaxToken{
         this.text = text;
         this.type = type;
         this.value = value;
-        this.span = new TextSpan(this.position, this.text?.length as number);
+        this.span = new TextSpan(this.position, this.text?.length ?? 0 as number);
     }
 
     public getChildren():SyntaxNode[] {
