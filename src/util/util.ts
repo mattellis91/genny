@@ -1,7 +1,7 @@
 import colors from 'colors/safe';
 import { SyntaxNode } from '../syntax/syntaxNode';
 import { Diagnostic } from "../compilation/diagnostic";
-import { SourceText } from '..';
+import { SourceText, SyntaxToken } from '..';
 
 export class Util {
 
@@ -16,7 +16,7 @@ export class Util {
             logString += " " + (node as any).value;
         }
 
-        console.log(logString);
+        console.log(node instanceof SyntaxToken ? colors.blue(logString) : colors.cyan(logString));
 
         indent += isLast ? "    " : "|    ";
 

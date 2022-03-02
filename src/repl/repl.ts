@@ -4,6 +4,7 @@ import { Util } from "../util/util";
 import { SyntaxTree } from "../syntax/syntaxTree";
 import { Compilation } from "../compilation/compilation";
 import { VariableSymbol } from "../compilation/variableSymbol";
+import colors from 'colors/safe';
 
 export class Repl implements IRepl{
     constructor() {}
@@ -16,9 +17,9 @@ export class Repl implements IRepl{
         while(true) {
 
             if(!text.length) {
-                process.stdout.write(">: ");
+                process.stdout.write(colors.green("» "));
             } else {
-                console.log("| ");
+                console.log("· ");
             }
             
             const input = readlineSync.question();
@@ -31,13 +32,13 @@ export class Repl implements IRepl{
                 }
 
                 else if(input === 'q') return;
-                else if(input === '$showTree') {
+                else if(input.toLowerCase() === '$showtree') {
                     showTree = !showTree;
                     console.log(showTree ? "Showing parse trees" : "Hiding parse trees");
                     continue;
                 }
 
-                else if(input === '$cls') {
+                else if(input.toLowerCase() === '$cls') {
                     console.clear();
                     continue;
                 }
@@ -65,7 +66,7 @@ export class Repl implements IRepl{
                     Util.logErrorMessage(input, text, diagnostic);
                 }
             } else {
-                console.log(result.value);
+                console.log(colors.magenta(result.value));
             }
 
             text = '';
