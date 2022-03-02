@@ -52,7 +52,7 @@ export class SourceText implements ISourceText {
             }
         }
 
-        if(pos > lineStart) {
+        if(pos >= lineStart) {
             result.push(SourceText.addLine(sourceText, pos, lineStart, 0));
         }
         return result;
