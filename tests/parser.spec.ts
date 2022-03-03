@@ -48,8 +48,9 @@ describe('Parser Tests', () => {
             const op2Text = SyntaxHelper.getTextForFixedTokens(pair.op2 as SyntaxType);
             const text = `a ${op1Text} b ${op2Text} c`;
 
-            const expression = SyntaxTree.parse(text).root;
-            const flattenedNode = SyntaxHelper.flattenSyntaxNode(expression);
+            const CompilationUnit = SyntaxTree.parse(text).root;
+            const flattenedNode = SyntaxHelper.flattenSyntaxNode(CompilationUnit.expression);
+            
 
             // console.log(text);
             // console.log(expression);
@@ -98,8 +99,9 @@ describe('Parser Tests', () => {
             const binaryText = SyntaxHelper.getTextForFixedTokens(pair.binaryOp as SyntaxType);
             const text = `${unaryText} a ${binaryText} b`;
 
-            const expression = SyntaxTree.parse(text).root;
-            const flattenedNode = SyntaxHelper.flattenSyntaxNode(expression);
+            const CompilationUnit = SyntaxTree.parse(text).root;
+            const flattenedNode = SyntaxHelper.flattenSyntaxNode(CompilationUnit.expression);
+            
             
             if(unaryPrecedence >= binaryPrecedence) {
                 //      binary

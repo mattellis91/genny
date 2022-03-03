@@ -1,3 +1,4 @@
+import { compilationUnitSyntax } from ".";
 import { SourceText } from "..";
 import { Diagnostic } from "../compilation/diagnostic";
 import { ISyntaxTree } from "../interfaces";
@@ -6,15 +7,15 @@ import { Parser } from "./parser";
 import { SyntaxToken } from "./syntax-token";
 
 export class SyntaxTree implements ISyntaxTree {
-    public root:ExpressionSyntax;
-    public EOFToken:SyntaxToken;
+    public root:compilationUnitSyntax;
     public readonly diagnostics:Diagnostic[];
     public text:SourceText;
-    constructor(text:SourceText, root:ExpressionSyntax, EOFToken: SyntaxToken, diagnostics:Diagnostic[]) {
+    private constructor(text:SourceText) {
+        const parser = new Parser(text);
+        const root = parser.parseCompilationUnit();
         this.text = text;
         this.root = root;
-        this.EOFToken = EOFToken;
-        this.diagnostics = diagnostics;
+        this.diagnostics = parser.diagnosticBag.diagnostics;
     }
 
     public static parse(text:string): SyntaxTree {
@@ -23,7 +24,6 @@ export class SyntaxTree implements ISyntaxTree {
     }
 
     public static parseFromSourceText(text:SourceText): SyntaxTree {
-        const parser = new Parser(text);
-        return parser.parse();
+        return new SyntaxTree(text);
     }
 }

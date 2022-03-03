@@ -5,7 +5,6 @@ import { SyntaxToken } from "../../syntax/syntax-token";
 
 export interface ISyntaxTree {
     root:ExpressionSyntax;
-    EOFToken: SyntaxToken;
     diagnostics:Diagnostic[];
     text:SourceText;
 }

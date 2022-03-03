@@ -28,9 +28,11 @@ export enum SyntaxType {
     LiteralExpression = "LiteralExpression",
     UnaryExpression = "UnaryExpression",
     NameExpression = "NameExpression",
-    AssignmentExpression = "AssignmentExpression",
+    AssignmentExpression = "AssignmentExpression",    
+    CompilationUnit = "CompilationUnit",
 
     //Keywords
     TrueKeyword = "TrueKeyword",
     FalseKeyword = "FalseKeyword",
+
 };

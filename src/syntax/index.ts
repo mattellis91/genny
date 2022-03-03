@@ -13,3 +13,4 @@ export * from './unaryExpressionSyntax';
 export * from './nameExpressionSyntax';
 export * from './assignmentExpressionSyntax';
 export * from './parenthesizedExpressionSyntax';
+export * from './compilationUnitSyntax';

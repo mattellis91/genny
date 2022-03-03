@@ -15,7 +15,7 @@ export class Compilation implements ICompilation {
 
     public evaluate(variables: Map<VariableSymbol, object>): EvaluationResult {
         const binder = new Binder(variables);
-        const boundExpression = binder.bindExpression(this.syntaxTree.root);
+        const boundExpression = binder.bindExpression(this.syntaxTree.root.expression);
 
         const diagnostics = [
             ...this.syntaxTree.diagnostics,

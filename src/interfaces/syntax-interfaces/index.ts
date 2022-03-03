@@ -11,3 +11,4 @@ export * from './i-unaryExpressionSyntax';
 export * from './i-nameExpressionSyntax';
 export * from './i-assignmentExpressionSyntax';
 export * from './i-syntaxNode';
+export * from './i-compilationUnitSyntax';

@@ -1,5 +1,5 @@
 
-import { AssignmentExpressionSyntax, NameExpressionSyntax } from ".";
+import { AssignmentExpressionSyntax, compilationUnitSyntax, NameExpressionSyntax } from ".";
 import { SourceText } from "..";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IParser } from "../interfaces/syntax-interfaces/i-parser";
@@ -152,10 +152,10 @@ export class Parser implements IParser {
         return this.parseAssignmentExpression();
     }
 
-    public parse(): SyntaxTree {
+    public parseCompilationUnit(): compilationUnitSyntax {
         const expression = this.parseExpression();
         const eof = this.match(SyntaxType.EOFToken);
-        return new SyntaxTree(this._text, expression, eof, this.diagnosticBag.diagnostics);
+        return new compilationUnitSyntax(expression, eof);
     }
 
     //gets the final list of tokens that the lexer produces for the parsing step. 
