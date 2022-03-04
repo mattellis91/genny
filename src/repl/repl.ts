@@ -13,6 +13,7 @@ export class Repl implements IRepl{
         let showTree = false;
         const variables = new Map<VariableSymbol, object>();
         let text = '';
+        let previous:Compilation | null = null; 
 
         while(true) {
 
@@ -52,7 +53,8 @@ export class Repl implements IRepl{
                 continue;
             }
 
-            const compilation = new Compilation(syntaxTree, variables);
+            const compilation:Compilation = previous === null ? new Compilation(syntaxTree) :  previous.continueWith(syntaxTree);
+
             const result = compilation.evaluate(variables);
             const diagnostics = result.diagnostics;
 
@@ -67,6 +69,7 @@ export class Repl implements IRepl{
                 }
             } else {
                 console.log(colors.magenta(result.value));
+                previous = compilation;
             }
 
             text = '';

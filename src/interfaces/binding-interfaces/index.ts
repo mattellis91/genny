@@ -9,3 +9,5 @@ export * from './i-boundExpression';
 export * from './i-boundLiteralExpression';
 export * from './i-boundUnaryOperator';
 export * from './i-boundVariableExpression';
+export * from './i-boundScope';
+export * from './i-boundGlobalScope';

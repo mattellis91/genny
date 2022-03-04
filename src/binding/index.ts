@@ -12,3 +12,5 @@ export * from './boundNode';
 export * from './boundNodeType';
 export * from './boundUnaryOperator';
 export * from './boundUnaryOperatorType';
+export * from './boundScope';
+export * from './boundGlobalScope';

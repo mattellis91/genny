@@ -9,22 +9,60 @@ import { BinaryExpressionSyntax,
         UnaryExpressionSyntax, 
         ParenthesizedExpressionSyntax,
         NameExpressionSyntax,
-        AssignmentExpressionSyntax
+        AssignmentExpressionSyntax,
+        compilationUnitSyntax
     } from "../syntax";
 import { BoundBinaryExpression } from "./boundBinaryExpression";
 import { BoundBinaryOperator } from "./boundBinaryOperator";
 import { BoundExpression } from "./boundExpression";
+import { BoundGlobalScope } from "./boundGlobalScope";
 import { BoundLiteralExpression } from "./boundLiteralExpression";
+import { BoundScope } from "./boundScope";
 import { BoundUnaryExpression } from "./boundUnaryExpression";
 import { BoundUnaryOperator } from "./boundUnaryOperator";
 
 export class Binder implements IBinder {
 
     public diagnosticBag:DiagnosticBag = new DiagnosticBag();
-    private readonly _variables: Map<VariableSymbol, object>;
+    private _scope:BoundScope;
 
-    constructor(variables:Map<VariableSymbol,object>) {
-        this._variables = variables;
+    constructor(parent:BoundScope | null) {
+        this._scope = new BoundScope(parent);
+    }
+
+    public static bindGlobalScope(previous:BoundGlobalScope | null, syntax:compilationUnitSyntax) {
+        const parentScope = Binder.createParentScopes(previous);
+        const binder = new Binder(parentScope);
+        const expression = binder.bindExpression(syntax.expression);
+        const variables = binder._scope.getDeclaredVariables();
+        let diagnostics = binder.diagnosticBag.diagnostics;
+
+        if(previous !== null) {
+            diagnostics = [...previous.diagnostics, ...diagnostics];
+        }
+
+        return new BoundGlobalScope(previous, diagnostics, variables, expression);
+    }
+
+    private static createParentScopes(previous:BoundGlobalScope | null):BoundScope | null {
+        const stack:BoundGlobalScope[] = [];
+        while(previous !== null) {
+            stack.push(previous);
+            previous = previous.previous;
+        }
+
+        let parent:BoundScope | null = null;
+
+        while(stack.length > 0) {
+            const previous = stack.pop() as BoundGlobalScope;
+            const scope:BoundScope = new BoundScope(parent);
+            for(const variable of previous?.variables.values()) {
+                scope.tryDeclare(variable);
+            }
+            parent = scope;
+        }
+
+        return parent;
     }
 
     public bindExpression(syntax:ExpressionSyntax) : BoundExpression {
@@ -78,16 +116,9 @@ export class Binder implements IBinder {
 
     private bindNameExpression(syntax:NameExpressionSyntax) : BoundExpression {
         const name = syntax.identifierToken.text as string;
-        let variable = undefined;
+        const variable = this._scope.tryLookup(name);
 
-        for(let [vSymbol, value] of this._variables) {
-            if(vSymbol.name === name) {
-                variable = vSymbol;
-                break;
-            }
-        }
-
-        if(variable === undefined) {
+        if(variable === null) {
             this.diagnosticBag.reportUndefinedNameExpression(syntax.identifierToken.span, name);
             return new BoundLiteralExpression(0);
         }
@@ -98,22 +129,11 @@ export class Binder implements IBinder {
     private bindAssignmentExpression(syntax:AssignmentExpressionSyntax) : BoundExpression {
         const name = syntax.identifierToken.text as string;
         const boundExpression = this.bindExpression(syntax.expression);
-
-        let existingVariable = undefined;
-
-        for(let [vSymbol, value] of this._variables) {
-            if(vSymbol.name === name) {
-                existingVariable = vSymbol;
-                break;
-            }
-        }
-
-        if(existingVariable !== undefined) {
-            this._variables.delete(existingVariable);
-        }
-
         const variable = new VariableSymbol(name, boundExpression.type);
-        this._variables.set(variable, null as unknown as object);
+
+        if(this._scope.tryDeclare(variable) === null) {   
+            this.diagnosticBag.reportVariableAlreadyDeclared(syntax.identifierToken.span, name);
+        }
 
         return new BoundAssignmentExpression(variable, boundExpression);
     }

@@ -36,7 +36,7 @@ describe('Evaluation tests', () => {
             const text = test.expression;
             const expression = SyntaxTree.parse(text);
             const vars = new Map<VariableSymbol, object>();
-            const compilation = new Compilation(expression, vars);
+            const compilation = new Compilation(expression);
             const result = compilation.evaluate(vars);
 
             expect(result.diagnostics).to.be.an('array').that.is.empty;
