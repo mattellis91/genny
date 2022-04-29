@@ -52,4 +52,9 @@ export class DiagnosticBag implements IDiagnosticBag {
         this.report(span, message);
     }
 
+    public reportCannotConvert(span:TextSpan, fromType:string, toType:string): void {
+        const message = `Cannot convert type ${fromType} to ${toType}`;
+        this.report(span, message);
+    }
+
 } 

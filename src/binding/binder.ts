@@ -129,10 +129,16 @@ export class Binder implements IBinder {
     private bindAssignmentExpression(syntax:AssignmentExpressionSyntax) : BoundExpression {
         const name = syntax.identifierToken.text as string;
         const boundExpression = this.bindExpression(syntax.expression);
-        const variable = new VariableSymbol(name, boundExpression.type);
+        let variable = this._scope.tryLookup(name);
 
-        if(this._scope.tryDeclare(variable) === null) {   
-            this.diagnosticBag.reportVariableAlreadyDeclared(syntax.identifierToken.span, name);
+        if(!variable) {
+            variable = new VariableSymbol(name, boundExpression.type);
+            this._scope.tryDeclare(variable);
+        }
+
+        if(boundExpression.type !== variable.type) {
+            this.diagnosticBag.reportCannotConvert(syntax.expression.getSpan(), boundExpression.type, variable.type);
+            return boundExpression;
         }
 
         return new BoundAssignmentExpression(variable, boundExpression);

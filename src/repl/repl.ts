@@ -43,6 +43,11 @@ export class Repl implements IRepl{
                     console.clear();
                     continue;
                 }
+
+                else if(input.toLowerCase() === '$reset') { //clear previous compilation (resets variables)
+                    previous = null;
+                    continue;
+                }
             }
 
             text += input;
