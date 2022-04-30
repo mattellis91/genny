@@ -3,5 +3,9 @@ export enum BoundNodeType {
     LiteralExpression = 'LiteralExpression',
     BinaryExpression = "BinaryExpression",
     VariableExpression = "VariableExpression",
-    AssignmentExpression = "AssignmentExpression"
+    AssignmentExpression = "AssignmentExpression",
+
+
+    BlockStatement = "BlockStatement",
+    ExpressionStatement = "ExpressionStatement"
 };

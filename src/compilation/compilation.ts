@@ -30,7 +30,7 @@ export class Compilation implements ICompilation {
             return new EvaluationResult(diagnostics, null);
         }
 
-        const evaluator = new Evaluator(globalScope.expression, variables);
+        const evaluator = new Evaluator(globalScope.statement, variables);
         const value = evaluator.evaluate();
 
         return new EvaluationResult([],value);

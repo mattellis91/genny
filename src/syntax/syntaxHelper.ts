@@ -115,6 +115,10 @@ export class SyntaxHelper {
             return '(';
         case SyntaxType.CloseParenthesisToken:
             return ')';
+        case SyntaxType.OpenBraceToken:
+            return '{';
+        case SyntaxType.CloseBraceToken:
+            return '}';
         case SyntaxType.FalseKeyword:
             return 'false';
         case SyntaxType.TrueKeyword:

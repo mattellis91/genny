@@ -11,3 +11,6 @@ export * from './i-boundUnaryOperator';
 export * from './i-boundVariableExpression';
 export * from './i-boundScope';
 export * from './i-boundGlobalScope';
+export * from './i-boundStatement';
+export * from './i-boundBlockStatement';
+export * from './i-boundExpressionStatement';

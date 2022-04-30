@@ -1,4 +1,4 @@
-import { BoundExpression, BoundUnaryExpression, BoundVariableExpression, BoundAssignmentExpression } from "../binding";
+import { BoundExpression, BoundUnaryExpression, BoundVariableExpression, BoundAssignmentExpression, BoundStatement, BoundBlockStatement, BoundExpressionStatement } from "../binding";
 import { BoundBinaryExpression } from "../binding/boundBinaryExpression";
 import { BoundBinaryOperatorType } from "../binding/boundBinaryOperatorType";
 import { BoundNodeType } from "../binding/boundNodeType";
@@ -8,16 +8,43 @@ import { VariableSymbol } from "../compilation/variableSymbol";
 import { IEvaluator } from "../interfaces/evaluation-interfaces/i-evaluator";
 
 export class Evaluator implements IEvaluator {
-    private readonly _root:BoundExpression;
+    private readonly _root:BoundStatement;
     private readonly _variables:Map<VariableSymbol, object>;
+    private _lastValue: unknown;
     
-    constructor(root: BoundExpression, variables: Map<VariableSymbol, object>) {      
+    constructor(root: BoundStatement, variables: Map<VariableSymbol, object>) {      
         this._root = root;
         this._variables = variables;
     }
 
     public evaluate():any {
-        return this.evaluateExpression(this._root);
+        this.evaluateStatement(this._root);
+        return this._lastValue;
+    }
+
+    
+
+    private evaluateStatement(statement: BoundStatement): any{
+        switch(statement.boundNodeType) {
+            case BoundNodeType.BlockStatement:
+                this.evaluateBlockStatement(statement as BoundBlockStatement);
+                break;
+            case BoundNodeType.ExpressionStatement:
+                this.evaluateExpressionStatement(statement as BoundExpressionStatement);
+                break;
+            default:
+                throw new Error("ERROR: Unexpected statement: " + statement.boundNodeType) 
+        }
+    }
+    
+    private evaluateBlockStatement(blockStatement: BoundBlockStatement) {
+        for(const statement of blockStatement.statements) {
+            this.evaluateStatement(statement);
+        }
+    }
+
+    private evaluateExpressionStatement(expressionStatement: BoundExpressionStatement) {
+        this._lastValue = this.evaluateExpression(expressionStatement.expression);
     }
 
     private evaluateExpression(node: BoundExpression): any{
@@ -33,7 +60,7 @@ export class Evaluator implements IEvaluator {
             case BoundNodeType.BinaryExpression:
                 return this.evaluateBinaryExpression(node as BoundBinaryExpression);
             default:
-                throw new Error("ERROR: Unexpected node: " + node.type) 
+                throw new Error("ERROR: Unexpected node: " + node.boundNodeType) 
         }
     }
 

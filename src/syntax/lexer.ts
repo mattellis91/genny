@@ -99,6 +99,14 @@ export class Lexer implements ILexer{
                 this._type = SyntaxType.CloseParenthesisToken;
                 this._position++;
                 break;
+            case '{':
+                this._type = SyntaxType.OpenBraceToken;
+                this._position++;
+                break;
+            case '}':
+                this._type = SyntaxType.CloseBraceToken;
+                this._position++;
+                break;
             case '%':
                 this._type = SyntaxType.ModToken;
                 this._position++;

@@ -14,3 +14,6 @@ export * from './boundUnaryOperator';
 export * from './boundUnaryOperatorType';
 export * from './boundScope';
 export * from './boundGlobalScope';
+export * from './boundStatement';
+export * from './boundBlockStatement';
+export * from './boundExpressionStatement';

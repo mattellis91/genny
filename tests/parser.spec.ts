@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Parser, SyntaxHelper, SyntaxToken, SyntaxTree, SyntaxType } from '../src';
+import { ExpressionStatementSyntax, Parser, SyntaxHelper, SyntaxToken, SyntaxTree, SyntaxType } from '../src';
 
 describe('Parser Tests', () => {
 
@@ -49,7 +49,7 @@ describe('Parser Tests', () => {
             const text = `a ${op1Text} b ${op2Text} c`;
 
             const CompilationUnit = SyntaxTree.parse(text).root;
-            const flattenedNode = SyntaxHelper.flattenSyntaxNode(CompilationUnit.expression);
+            const flattenedNode = SyntaxHelper.flattenSyntaxNode((CompilationUnit.statement as ExpressionStatementSyntax).expression);
             
 
             // console.log(text);
@@ -100,7 +100,7 @@ describe('Parser Tests', () => {
             const text = `${unaryText} a ${binaryText} b`;
 
             const CompilationUnit = SyntaxTree.parse(text).root;
-            const flattenedNode = SyntaxHelper.flattenSyntaxNode(CompilationUnit.expression);
+            const flattenedNode = SyntaxHelper.flattenSyntaxNode((CompilationUnit.statement as ExpressionStatementSyntax).expression);
             
             
             if(unaryPrecedence >= binaryPrecedence) {

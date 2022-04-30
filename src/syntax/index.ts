@@ -14,3 +14,6 @@ export * from './nameExpressionSyntax';
 export * from './assignmentExpressionSyntax';
 export * from './parenthesizedExpressionSyntax';
 export * from './compilationUnitSyntax';
+export * from './statementSyntax';
+export * from './blockStatementSyntax';
+export * from './expressionStatementSyntax';

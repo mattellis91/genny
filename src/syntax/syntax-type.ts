@@ -10,6 +10,8 @@ export enum SyntaxType {
     SlashToken = "SlashToken",
     OpenParenthesisToken = "OpenParenthesisToken",
     CloseParenthesisToken = "CloseParenthesisToken",
+    OpenBraceToken = "OpenBrackToken",
+    CloseBraceToken = "CloseBrackToken",
     ModToken = "ModToken",
     UnknownToken = "UnknownToken",
     EOFToken = "EOFToken",
@@ -28,11 +30,17 @@ export enum SyntaxType {
     LiteralExpression = "LiteralExpression",
     UnaryExpression = "UnaryExpression",
     NameExpression = "NameExpression",
-    AssignmentExpression = "AssignmentExpression",    
+    AssignmentExpression = "AssignmentExpression",
+    
+    //Compilation
     CompilationUnit = "CompilationUnit",
 
     //Keywords
     TrueKeyword = "TrueKeyword",
     FalseKeyword = "FalseKeyword",
+
+    //Statements
+    BlockStatement = "BlockStatement",
+    ExpressionStatement = "ExpressionStatement"
 
 };

@@ -1,12 +1,13 @@
 import { ExpressionSyntax, SyntaxNode, SyntaxToken, SyntaxType } from ".";
 import { ICompilationUnitSyntax } from "..";
+import { StatementSyntax } from "./statementSyntax";
 
 export class compilationUnitSyntax extends SyntaxNode implements ICompilationUnitSyntax {
-    public expression:ExpressionSyntax;
+    public statement:StatementSyntax;
     public type = SyntaxType.CompilationUnit;
-    constructor(expression: ExpressionSyntax, eofToken:SyntaxToken) {
+    constructor(statement: StatementSyntax, eofToken:SyntaxToken) {
         super();
-        this.expression = expression;
+        this.statement = statement;
     }
 
     public getChildren():SyntaxNode[] {

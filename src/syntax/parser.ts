@@ -4,10 +4,13 @@ import { SourceText } from "..";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IParser } from "../interfaces/syntax-interfaces/i-parser";
 import { BinaryExpressionSyntax } from "./binaryExpressionSyntax";
+import { BlockStatementSyntax } from "./blockStatementSyntax";
+import { ExpressionStatementSyntax } from "./expressionStatementSyntax";
 import { ExpressionSyntax } from "./expressionSyntax";
 import { Lexer } from "./lexer";
 import { LiteralExpressionSyntax } from "./literalExpressionSyntax";
 import { ParenthesizedExpressionSyntax } from "./parenthesizedExpressionSyntax";
+import { StatementSyntax } from "./statementSyntax";
 import { SyntaxToken } from "./syntax-token";
 import { SyntaxType } from "./syntax-type";
 import { SyntaxHelper } from "./syntaxHelper";
@@ -152,10 +155,37 @@ export class Parser implements IParser {
         return this.parseAssignmentExpression();
     }
 
-    public parseCompilationUnit(): compilationUnitSyntax {
+    private parseStatement(): StatementSyntax {
+        if(this.getCurrent().type === SyntaxType.OpenBraceToken) {
+            return this.parseBlockStatement();
+        }
+        return this.parseExpressionStatement();
+    }
+
+    private parseBlockStatement(): StatementSyntax {
+        const statements:StatementSyntax[] = [];
+
+        const openBraceToken = this.match(SyntaxType.OpenBraceToken);
+        
+        while(this.getCurrent().type !== SyntaxType.EOFToken && this.getCurrent().type !== SyntaxType.CloseBraceToken) {
+             
+            const statement = this.parseStatement();
+            statements.push(statement);
+        }
+
+        const closeBraceToken = this.match(SyntaxType.CloseBraceToken);
+        return new BlockStatementSyntax(openBraceToken, statements, closeBraceToken);
+    }
+
+    private parseExpressionStatement() : StatementSyntax {
         const expression = this.parseExpression();
+        return new ExpressionStatementSyntax(expression);
+    }
+
+    public parseCompilationUnit(): compilationUnitSyntax {
+        const statement = this.parseStatement();
         const eof = this.match(SyntaxType.EOFToken);
-        return new compilationUnitSyntax(expression, eof);
+        return new compilationUnitSyntax(statement, eof);
     }
 
     //gets the final list of tokens that the lexer produces for the parsing step. 

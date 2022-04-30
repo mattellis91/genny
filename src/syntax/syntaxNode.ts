@@ -8,8 +8,14 @@ export abstract class SyntaxNode implements ISyntaxNode {
     public abstract getChildren():SyntaxNode[];
     public getSpan():TextSpan {
         const children = this.getChildren();
-        const first:TextSpan = children.length ? children[0].getSpan() : (this as unknown as SyntaxToken).span;
-        const last:TextSpan = children.length ? children[children.length - 1].getSpan() : (this as unknown as SyntaxToken).span;
+        let first, last;
+        if(children.length){
+            first = children[0].getSpan();
+            last = children[children.length - 1].getSpan();
+        } else {
+            first = (this as unknown as SyntaxToken).span;
+            last = (this as unknown as SyntaxToken).span;
+        }
         return TextSpan.fromBounds(first.start,last.end);
     }
 

@@ -10,14 +10,20 @@ import { BinaryExpressionSyntax,
         ParenthesizedExpressionSyntax,
         NameExpressionSyntax,
         AssignmentExpressionSyntax,
-        compilationUnitSyntax
+        compilationUnitSyntax,
+        StatementSyntax,
+        BlockStatementSyntax,
+        ExpressionStatementSyntax
     } from "../syntax";
 import { BoundBinaryExpression } from "./boundBinaryExpression";
 import { BoundBinaryOperator } from "./boundBinaryOperator";
+import { BoundBlockStatement } from "./boundBlockStatement";
 import { BoundExpression } from "./boundExpression";
+import { BoundExpressionStatement } from "./boundExpressionStatement";
 import { BoundGlobalScope } from "./boundGlobalScope";
 import { BoundLiteralExpression } from "./boundLiteralExpression";
 import { BoundScope } from "./boundScope";
+import { BoundStatement } from "./boundStatement";
 import { BoundUnaryExpression } from "./boundUnaryExpression";
 import { BoundUnaryOperator } from "./boundUnaryOperator";
 
@@ -33,7 +39,7 @@ export class Binder implements IBinder {
     public static bindGlobalScope(previous:BoundGlobalScope | null, syntax:compilationUnitSyntax) {
         const parentScope = Binder.createParentScopes(previous);
         const binder = new Binder(parentScope);
-        const expression = binder.bindExpression(syntax.expression);
+        const statement = binder.bindStatement(syntax.statement);
         const variables = binder._scope.getDeclaredVariables();
         let diagnostics = binder.diagnosticBag.diagnostics;
 
@@ -41,7 +47,7 @@ export class Binder implements IBinder {
             diagnostics = [...previous.diagnostics, ...diagnostics];
         }
 
-        return new BoundGlobalScope(previous, diagnostics, variables, expression);
+        return new BoundGlobalScope(previous, diagnostics, variables, statement);
     }
 
     private static createParentScopes(previous:BoundGlobalScope | null):BoundScope | null {
@@ -65,7 +71,32 @@ export class Binder implements IBinder {
         return parent;
     }
 
-    public bindExpression(syntax:ExpressionSyntax) : BoundExpression {
+    private bindStatement(syntax:StatementSyntax) : BoundStatement {
+        switch(syntax.type) {
+            case SyntaxType.BlockStatement:
+                return this.bindBlockStatement((syntax as BlockStatementSyntax));
+            case SyntaxType.ExpressionStatement:
+                return this.bindExpressionStatement((syntax as ExpressionStatementSyntax));
+            default:
+                throw new Error("ERROR: Unexpected syntax: " + syntax.type);
+        }
+    }
+
+    private bindBlockStatement(syntax:BlockStatementSyntax) : BoundStatement {
+        const statements:BoundStatement[] = [];
+        for(const statementSyntax of syntax.statements) {
+            const statement = this.bindStatement(statementSyntax);
+            statements.push(statement);
+        }
+        return new BoundBlockStatement(statements)
+    }
+
+    private bindExpressionStatement(syntax:ExpressionStatementSyntax): BoundStatement {
+        const expression = this.bindExpression(syntax.expression);
+        return new BoundExpressionStatement(expression);
+    }
+
+    private bindExpression(syntax:ExpressionSyntax) : BoundExpression {
         switch(syntax.type) {
             case SyntaxType.BinaryExpression:
                 return this.bindBinaryExpression(syntax as BinaryExpressionSyntax);
