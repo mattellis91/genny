@@ -17,3 +17,4 @@ export * from './boundGlobalScope';
 export * from './boundStatement';
 export * from './boundBlockStatement';
 export * from './boundExpressionStatement';
+export * from './boundVariableDeclaration';

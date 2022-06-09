@@ -37,10 +37,14 @@ export class SyntaxHelper {
 
     public static getKeywordType(text:string): SyntaxType {
         switch(text) {
-            case "true":
-                return SyntaxType.TrueKeyword;
             case "false":
                 return SyntaxType.FalseKeyword;
+            case "let":
+                return SyntaxType.LetKeyword;
+            case "true":
+                return SyntaxType.TrueKeyword;
+            case "var":
+                return SyntaxType.VarKeyword;
             default:
                 return SyntaxType.IdentifierToken;
         }
@@ -121,6 +125,10 @@ export class SyntaxHelper {
             return '}';
         case SyntaxType.FalseKeyword:
             return 'false';
+        case SyntaxType.LetKeyword:
+            return 'let';
+        case SyntaxType.VarKeyword:
+            return 'var';
         case SyntaxType.TrueKeyword:
             return 'true';
         default:

@@ -17,3 +17,4 @@ export * from './compilationUnitSyntax';
 export * from './statementSyntax';
 export * from './blockStatementSyntax';
 export * from './expressionStatementSyntax';
+export * from './variableDeclarationSyntax';

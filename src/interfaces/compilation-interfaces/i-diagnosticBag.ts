@@ -10,5 +10,6 @@ export interface IDiagnosticBag {
     reportUndefinedBinaryExpression(span:TextSpan, operatorText:string, leftType:string, rightType:string):void;
     reportUndefinedUnaryOperator(span:TextSpan, operatorText:string, operandType:string):void;
     reportUndefinedNameExpression(span:TextSpan, name:string):void;
-    reportVariableAlreadyDeclared(span:TextSpan, name:string) :void
+    reportVariableAlreadyDeclared(span:TextSpan, name:string) :void;
+    reportCannotAssign(span:TextSpan, name:string) :void
 }

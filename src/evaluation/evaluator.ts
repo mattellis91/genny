@@ -1,4 +1,4 @@
-import { BoundExpression, BoundUnaryExpression, BoundVariableExpression, BoundAssignmentExpression, BoundStatement, BoundBlockStatement, BoundExpressionStatement } from "../binding";
+import { BoundExpression, BoundUnaryExpression, BoundVariableExpression, BoundAssignmentExpression, BoundStatement, BoundBlockStatement, BoundExpressionStatement, BoundVariableDeclaration } from "../binding";
 import { BoundBinaryExpression } from "../binding/boundBinaryExpression";
 import { BoundBinaryOperatorType } from "../binding/boundBinaryOperatorType";
 import { BoundNodeType } from "../binding/boundNodeType";
@@ -22,12 +22,13 @@ export class Evaluator implements IEvaluator {
         return this._lastValue;
     }
 
-    
-
     private evaluateStatement(statement: BoundStatement): any{
         switch(statement.boundNodeType) {
             case BoundNodeType.BlockStatement:
                 this.evaluateBlockStatement(statement as BoundBlockStatement);
+                break;
+            case BoundNodeType.VariableDeclaration:
+                this.evaluateVariableDeclaration(statement as BoundVariableDeclaration);
                 break;
             case BoundNodeType.ExpressionStatement:
                 this.evaluateExpressionStatement(statement as BoundExpressionStatement);
@@ -41,6 +42,12 @@ export class Evaluator implements IEvaluator {
         for(const statement of blockStatement.statements) {
             this.evaluateStatement(statement);
         }
+    }
+
+    private evaluateVariableDeclaration(node: BoundVariableDeclaration) {
+        const value = this.evaluateExpression(node.initializser);
+        this._variables.set(node.variable, value);
+        this._lastValue = value;
     }
 
     private evaluateExpressionStatement(expressionStatement: BoundExpressionStatement) {

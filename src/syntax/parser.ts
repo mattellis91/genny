@@ -1,5 +1,5 @@
 
-import { AssignmentExpressionSyntax, compilationUnitSyntax, NameExpressionSyntax } from ".";
+import { AssignmentExpressionSyntax, compilationUnitSyntax, NameExpressionSyntax,  variableDeclarationSyntax } from ".";
 import { SourceText } from "..";
 import { DiagnosticBag } from "../compilation/diagnosticBag";
 import { IParser } from "../interfaces/syntax-interfaces/i-parser";
@@ -151,15 +151,29 @@ export class Parser implements IParser {
 
     }
 
+    private parseVariableDeclaration() : ExpressionSyntax {
+        const expected = this.getCurrent().type === SyntaxType.LetKeyword ? SyntaxType.LetKeyword : SyntaxType.VarKeyword;
+        const keyword = this.match(expected);
+        const identifier = this.match(SyntaxType.IdentifierToken);
+        const equals = this.match(SyntaxType.EqualsToken);
+        const initializer = this.parseExpression();
+        return new variableDeclarationSyntax(keyword,identifier,equals,initializer);
+    }
+
     private parseExpression() : ExpressionSyntax {
         return this.parseAssignmentExpression();
     }
 
     private parseStatement(): StatementSyntax {
-        if(this.getCurrent().type === SyntaxType.OpenBraceToken) {
-            return this.parseBlockStatement();
-        }
-        return this.parseExpressionStatement();
+        switch(this.getCurrent().type) {
+            case SyntaxType.OpenBraceToken:
+                return this.parseBlockStatement();
+            case SyntaxType.LetKeyword:
+            case SyntaxType.VarKeyword:
+                return this.parseVariableDeclaration();
+            default:
+                return this.parseExpressionStatement();
+        }        
     }
 
     private parseBlockStatement(): StatementSyntax {

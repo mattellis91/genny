@@ -13,7 +13,8 @@ import { BinaryExpressionSyntax,
         compilationUnitSyntax,
         StatementSyntax,
         BlockStatementSyntax,
-        ExpressionStatementSyntax
+        ExpressionStatementSyntax,
+        variableDeclarationSyntax
     } from "../syntax";
 import { BoundBinaryExpression } from "./boundBinaryExpression";
 import { BoundBinaryOperator } from "./boundBinaryOperator";
@@ -26,6 +27,7 @@ import { BoundScope } from "./boundScope";
 import { BoundStatement } from "./boundStatement";
 import { BoundUnaryExpression } from "./boundUnaryExpression";
 import { BoundUnaryOperator } from "./boundUnaryOperator";
+import { BoundVariableDeclaration } from "./boundVariableDeclaration";
 
 export class Binder implements IBinder {
 
@@ -75,6 +77,8 @@ export class Binder implements IBinder {
         switch(syntax.type) {
             case SyntaxType.BlockStatement:
                 return this.bindBlockStatement((syntax as BlockStatementSyntax));
+            case SyntaxType.VariableDeclaration:
+                return this.bindVariableDeclaration((syntax as variableDeclarationSyntax));
             case SyntaxType.ExpressionStatement:
                 return this.bindExpressionStatement((syntax as ExpressionStatementSyntax));
             default:
@@ -84,11 +88,29 @@ export class Binder implements IBinder {
 
     private bindBlockStatement(syntax:BlockStatementSyntax) : BoundStatement {
         const statements:BoundStatement[] = [];
+        this._scope = new BoundScope(this._scope);
+        
         for(const statementSyntax of syntax.statements) {
             const statement = this.bindStatement(statementSyntax);
             statements.push(statement);
         }
+
+        this._scope = this._scope.parent as BoundScope;
+
         return new BoundBlockStatement(statements)
+    }
+
+    private bindVariableDeclaration(syntax: variableDeclarationSyntax) {
+        const name = syntax.identifier.text as string;
+        const isReadOnly = syntax.keyword.type === SyntaxType.LetKeyword;
+        const initializer = this.bindExpression(syntax.initializer);
+        const variable = new VariableSymbol(name, isReadOnly, initializer.type);
+
+        if(!this._scope.tryDeclare(variable)) {
+            this.diagnosticBag.reportVariableAlreadyDeclared(syntax.identifier.span, name);
+        }
+
+        return new BoundVariableDeclaration(variable, initializer);
     }
 
     private bindExpressionStatement(syntax:ExpressionStatementSyntax): BoundStatement {
@@ -163,8 +185,12 @@ export class Binder implements IBinder {
         let variable = this._scope.tryLookup(name);
 
         if(!variable) {
-            variable = new VariableSymbol(name, boundExpression.type);
-            this._scope.tryDeclare(variable);
+            this.diagnosticBag.reportUndefinedNameExpression(syntax.identifierToken.span, name);
+            return boundExpression;
+        }
+
+        if(variable.isReadOnly) {
+            this.diagnosticBag.reportCannotAssign(syntax.equalsToken.span, name);
         }
 
         if(boundExpression.type !== variable.type) {

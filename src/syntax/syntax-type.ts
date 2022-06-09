@@ -38,9 +38,12 @@ export enum SyntaxType {
     //Keywords
     TrueKeyword = "TrueKeyword",
     FalseKeyword = "FalseKeyword",
+    LetKeyword = "LetKeyword",
+    VarKeyword = "Varkeyword",
 
     //Statements
     BlockStatement = "BlockStatement",
-    ExpressionStatement = "ExpressionStatement"
+    ExpressionStatement = "ExpressionStatement",
+    VariableDeclaration = "VariableDeclaration"
 
 };

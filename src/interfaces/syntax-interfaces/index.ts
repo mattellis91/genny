@@ -15,3 +15,4 @@ export * from './i-compilationUnitSyntax';
 export * from './i-statementSyntax';
 export * from './i-blockStatementSyntax';
 export * from './i-expressionStatementSyntax';
+export * from './i-variableDeclarationSyntax';

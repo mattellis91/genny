@@ -57,4 +57,9 @@ export class DiagnosticBag implements IDiagnosticBag {
         this.report(span, message);
     }
 
+    public reportCannotAssign(span:TextSpan, name:string) :void {
+        const message = "Variable '" + name + "' is read only and cannot be reassigned";
+        this.report(span, message);
+    }
+
 } 
